@@ -7,13 +7,26 @@ export function Hero() {
     <section className="relative overflow-hidden border-b border-zinc-200">
       <div className="bg-grid-fade absolute inset-0" />
 
-      <div className="container-page relative flex flex-row items-start gap-5 py-16 sm:gap-10 sm:py-24 md:gap-16 md:py-32">
-        <div className="flex min-w-0 flex-1 flex-col gap-6 sm:gap-8">
-          <h1 className="animate-fade-up max-w-4xl text-balance text-5xl font-medium leading-[1.1] tracking-tight text-zinc-950 opacity-0 sm:text-6xl md:text-7xl">
+      <div className="container-page relative py-16 sm:py-24 md:py-32">
+        <div className="hero-grid">
+          <h1
+            style={{ gridArea: "heading" }}
+            className="animate-fade-up min-w-0 max-w-4xl text-balance text-5xl font-medium leading-[1.1] tracking-tight text-zinc-950 opacity-0 sm:text-6xl md:text-7xl"
+          >
             Hi, I&apos;m <span className="text-accent">Madaly</span>
           </h1>
 
-          <p className="animate-fade-up max-w-2xl text-balance text-lg leading-relaxed text-zinc-700 opacity-0 [animation-delay:80ms] sm:text-xl">
+          <div
+            style={{ gridArea: "photo" }}
+            className="animate-fade-up shrink-0 justify-self-end opacity-0 [animation-delay:120ms] sm:justify-self-auto"
+          >
+            <ProfilePhoto />
+          </div>
+
+          <p
+            style={{ gridArea: "bio" }}
+            className="animate-fade-up max-w-2xl text-balance text-lg leading-relaxed text-zinc-700 opacity-0 [animation-delay:80ms] sm:text-xl"
+          >
             — a multipassionate software engineer and computational physicist
             building
             systems at the intersection of{" "}
@@ -30,7 +43,10 @@ export function Hero() {
             , with a focus on autonomous spacecraft systems.
           </p>
 
-          <div className="animate-fade-up flex flex-wrap items-center gap-4 pt-2 opacity-0 [animation-delay:160ms]">
+          <div
+            style={{ gridArea: "cta" }}
+            className="animate-fade-up flex flex-wrap items-center gap-4 pt-2 opacity-0 [animation-delay:160ms]"
+          >
             <Link
               href="/projects"
               className="group inline-flex items-center gap-2 rounded-sm border border-accent/40 bg-accent/10 px-5 py-2.5 font-mono text-sm uppercase tracking-widest text-accent-dim transition-all duration-300 ease-precise hover:bg-accent/20"
@@ -53,7 +69,10 @@ export function Hero() {
             </Link>
           </div>
 
-          <dl className="animate-fade-up mt-4 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-4 border-t border-zinc-200 pt-8 font-mono text-sm opacity-0 [animation-delay:240ms] sm:grid-cols-3">
+          <dl
+            style={{ gridArea: "stats" }}
+            className="animate-fade-up mt-4 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-4 border-t border-zinc-200 pt-8 font-mono text-sm opacity-0 [animation-delay:240ms] sm:grid-cols-3"
+          >
             {[
               { label: "Degree", value: "B.S. Physics" },
               { label: "Upcoming", value: "M.S. EE" },
@@ -67,10 +86,6 @@ export function Hero() {
               </div>
             ))}
           </dl>
-        </div>
-
-        <div className="animate-fade-up shrink-0 opacity-0 [animation-delay:120ms]">
-          <ProfilePhoto />
         </div>
       </div>
     </section>
