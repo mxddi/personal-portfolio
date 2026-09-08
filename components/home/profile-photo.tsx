@@ -22,7 +22,7 @@ export function ProfilePhoto() {
   const src = findProfileImage();
 
   return (
-    <div className="relative w-20 sm:w-36 md:w-48 lg:w-64 xl:w-72">
+    <div className="relative w-36 sm:w-44 md:w-52 lg:w-64 xl:w-72">
       {/* Corner brackets — technical "figure" framing */}
       <span className="absolute -left-1.5 -top-1.5 h-3 w-3 border-l border-t border-zinc-300 sm:-left-2 sm:-top-2 sm:h-4 sm:w-4" />
       <span className="absolute -right-1.5 -top-1.5 h-3 w-3 border-r border-t border-zinc-300 sm:-right-2 sm:-top-2 sm:h-4 sm:w-4" />
@@ -35,7 +35,7 @@ export function ProfilePhoto() {
             src={src}
             alt="Portrait of Madaly G"
             fill
-            sizes="(min-width: 1280px) 288px, (min-width: 1024px) 256px, (min-width: 768px) 192px, (min-width: 640px) 144px, 96px"
+            sizes="(min-width: 1280px) 288px, (min-width: 1024px) 256px, (min-width: 768px) 208px, (min-width: 640px) 176px, 144px"
             className="object-cover"
             priority
           />

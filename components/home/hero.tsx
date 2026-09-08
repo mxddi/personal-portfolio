@@ -7,7 +7,7 @@ export function Hero() {
     <section className="relative overflow-hidden border-b border-zinc-200">
       <div className="bg-grid-fade absolute inset-0" />
 
-      <div className="container-page relative flex flex-row items-start gap-4 py-16 sm:gap-10 sm:py-24 md:items-center md:gap-16 md:py-32">
+      <div className="container-page relative flex flex-row items-start gap-5 py-16 sm:gap-10 sm:py-24 md:gap-16 md:py-32">
         <div className="flex min-w-0 flex-1 flex-col gap-6 sm:gap-8">
           <h1 className="animate-fade-up max-w-4xl text-balance text-5xl font-medium leading-[1.1] tracking-tight text-zinc-950 opacity-0 sm:text-6xl md:text-7xl">
             Hi, I&apos;m <span className="text-accent">Madaly</span>
