@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------- */
+/* Theme tokens (Tailwind v4 CSS-first config)                            */
+/* ---------------------------------------------------------------------- */
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular",
+    monospace;
+
+  --color-accent: #0d9488; /* teal-600 — precise, technical, high-contrast on white */
+  --color-accent-dim: #0f766e;
+
+  --ease-precise: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Base                                                                    */
+/* ---------------------------------------------------------------------- */
+@layer base {
+  * {
+    @apply border-black/12;
+  }
+
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-zinc-800 antialiased text-[17px];
+    font-feature-settings: "ss01", "ss02", "cv01";
+  }
+
+  ::selection {
+    @apply bg-accent/20 text-zinc-950;
+  }
+
+  /* Slim, quiet scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(0 0 0 / 0.12);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(0 0 0 / 0.22);
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Components                                                              */
+/* ---------------------------------------------------------------------- */
+@layer components {
+  /* Full-bleed subtle grid backdrop with radial fade, used behind the hero */
+  .bg-grid-fade {
+    background-image: linear-gradient(
+        to right,
+        rgb(0 0 0 / 0.05) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(
+      ellipse 70% 55% at 50% 0%,
+      black 40%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 70% 55% at 50% 0%,
+      black 40%,
+      transparent 100%
+    );
+  }
+
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+  }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Micro-interaction utilities                                            */
+/* ---------------------------------------------------------------------- */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@utility animate-fade-up {
+  animation: fade-up 0.6s var(--ease-precise) forwards;
+}
+
+@utility animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
