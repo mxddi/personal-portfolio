@@ -37,7 +37,7 @@ export const pillars: Pillar[] = [
     index: "03",
     title: "Electrical & Hardware Systems",
     description:
-      "Hands-on hardware design — from a self-built cloud chamber to laser-optics experiments — bridging circuits, sensors, and physical systems.",
+      "Hands-on hardware design — from a custom designed cloud chamber to laser optics experiments — combining circuits, sensors, and data into complete physical systems.",
     skills: [
       "Electrical / Hardware Interfacing",
       "CAD (Fusion 360) · 3D Printing",

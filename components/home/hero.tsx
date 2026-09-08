@@ -10,7 +10,7 @@ export function Hero() {
       <div className="container-page relative flex flex-row items-start gap-4 py-16 sm:gap-10 sm:py-24 md:items-center md:gap-16 md:py-32">
         <div className="flex min-w-0 flex-1 flex-col gap-6 sm:gap-8">
           <h1 className="animate-fade-up max-w-4xl text-balance text-5xl font-medium leading-[1.1] tracking-tight text-zinc-950 opacity-0 sm:text-6xl md:text-7xl">
-            Hi, I&apos;m <span className="text-accent">Madaly</span>.
+            Hi, I&apos;m <span className="text-accent">Madaly</span>
           </h1>
 
           <p className="animate-fade-up max-w-2xl text-balance text-lg leading-relaxed text-zinc-700 opacity-0 [animation-delay:80ms] sm:text-xl">
@@ -19,7 +19,7 @@ export function Hero() {
             systems at the intersection of{" "}
             <span className="text-zinc-950">code</span>,{" "}
             <span className="text-zinc-950">
-              the physics of the universe
+              the physics of our universe
             </span>
             , and <span className="text-zinc-950">circuits</span>. I hold a{" "}
             <span className="text-zinc-950">B.S. in Physics</span> and am

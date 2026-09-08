@@ -22,7 +22,7 @@ export default function RecognitionPage() {
       <PageIntro
         eyebrow="Honors & Awards"
         title="Recognition"
-        description="Selected grants, scholarships, academic honors, competitive event placements, and service awards — a running record across research, hackathons, and coursework."
+        description="Selected grants, scholarships, academic honors, competitive event placements, and service awards."
       />
 
       <div className="mt-12 flex flex-col gap-14">
