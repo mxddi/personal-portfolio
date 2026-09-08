@@ -23,12 +23,6 @@ export function ProfilePhoto() {
 
   return (
     <div className="relative w-28 min-[375px]:w-40 sm:w-44 md:w-52 lg:w-64 xl:w-72">
-      {/* Corner brackets — technical "figure" framing */}
-      <span className="absolute -left-1.5 -top-1.5 h-3 w-3 border-l border-t border-zinc-300 sm:-left-2 sm:-top-2 sm:h-4 sm:w-4" />
-      <span className="absolute -right-1.5 -top-1.5 h-3 w-3 border-r border-t border-zinc-300 sm:-right-2 sm:-top-2 sm:h-4 sm:w-4" />
-      <span className="absolute -bottom-1.5 -left-1.5 h-3 w-3 border-b border-l border-zinc-300 sm:-bottom-2 sm:-left-2 sm:h-4 sm:w-4" />
-      <span className="absolute -bottom-1.5 -right-1.5 h-3 w-3 border-b border-r border-zinc-300 sm:-bottom-2 sm:-right-2 sm:h-4 sm:w-4" />
-
       <div className="relative aspect-[4/5] w-full overflow-hidden rounded-sm border border-zinc-200 bg-zinc-50">
         {src ? (
           <Image
@@ -48,10 +42,6 @@ export function ProfilePhoto() {
           </div>
         )}
       </div>
-
-      <p className="mt-2 hidden text-center font-mono text-[11px] uppercase tracking-widest text-zinc-500 sm:mt-3 sm:block sm:text-left sm:text-xs">
-        Fig. 01 — Madaly G
-      </p>
     </div>
   );
 }

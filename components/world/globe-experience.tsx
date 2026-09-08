@@ -2,18 +2,26 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 import Papa from "papaparse";
 import { Eye, X } from "lucide-react";
 import type { GlobeMethods } from "react-globe.gl";
+import { getNotebookForLocation } from "@/lib/data/travel-notebooks";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
+const NotebookViewer = dynamic(
+  () => import("@/components/world/notebook-viewer").then((m) => m.NotebookViewer),
+  { ssr: false }
+);
 
 interface LocationPoint {
   name: string;
   lat: number;
   lng: number;
   galleryUrl: string | null;
+  notebookUrl: string | null;
+  notebookTitle: string | null;
 }
 
 const ACCENT = "#2dd4bf";
@@ -29,6 +37,10 @@ export function GlobeExperience() {
   const [loadError, setLoadError] = useState(false);
   const [selected, setSelected] = useState<LocationPoint | null>(null);
   const [globeReady, setGlobeReady] = useState(false);
+  const [openNotebook, setOpenNotebook] = useState<{
+    pdfUrl: string;
+    title: string;
+  } | null>(null);
 
   // Measure container for a responsive canvas.
   useEffect(() => {
@@ -58,7 +70,15 @@ export function GlobeExperience() {
             const name = row["Location Name"]?.trim();
             const galleryUrl = row["galleryUrl"]?.trim() || null;
             if (!name || Number.isNaN(lat) || Number.isNaN(lng)) return null;
-            return { name, lat, lng, galleryUrl } as LocationPoint;
+            const notebook = getNotebookForLocation(name);
+            return {
+              name,
+              lat,
+              lng,
+              galleryUrl,
+              notebookUrl: notebook?.pdfUrl ?? null,
+              notebookTitle: notebook?.title ?? null,
+            } as LocationPoint;
           })
           .filter((row): row is LocationPoint => row !== null);
         setLocations(rows);
@@ -102,7 +122,7 @@ export function GlobeExperience() {
   }, [locations, globeReady]);
 
   const ringsData = useMemo(
-    () => (locations ?? []).filter((d) => d.galleryUrl),
+    () => (locations ?? []).filter((d) => d.galleryUrl || d.notebookUrl),
     [locations]
   );
 
@@ -128,9 +148,15 @@ export function GlobeExperience() {
           pointLat="lat"
           pointLng="lng"
           pointAltitude={0.01}
-          pointRadius={(d) => ((d as LocationPoint).galleryUrl ? 0.45 : 0.28)}
+          pointRadius={(d) =>
+            (d as LocationPoint).galleryUrl || (d as LocationPoint).notebookUrl
+              ? 0.45
+              : 0.28
+          }
           pointColor={(d) =>
-            (d as LocationPoint).galleryUrl ? ACCENT : ACCENT_DIM
+            (d as LocationPoint).galleryUrl || (d as LocationPoint).notebookUrl
+              ? ACCENT
+              : ACCENT_DIM
           }
           pointLabel={(d) => (d as LocationPoint).name}
           onPointClick={(d) => setSelected(d as LocationPoint)}
@@ -177,26 +203,61 @@ export function GlobeExperience() {
               <X className="h-4 w-4" strokeWidth={1.5} />
             </button>
 
-            <h3 className="pr-6 text-lg font-medium tracking-tight text-zinc-50">
-              {selected.name}
-            </h3>
+            <div className="flex items-center gap-4 pr-6">
+              <div className="min-w-0 flex-1">
+                <h3 className="text-lg font-medium tracking-tight text-zinc-50">
+                  {selected.name}
+                </h3>
 
-            {selected.galleryUrl && (
-              <Link
-                href={selected.galleryUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="group mt-4 inline-flex items-center gap-2 border-t border-white/10 pt-4 font-mono text-xs uppercase tracking-widest text-teal-300 transition-colors duration-200 hover:text-teal-200"
-              >
-                <Eye
-                  className="h-3.5 w-3.5 transition-transform duration-200 group-hover:scale-110"
-                  strokeWidth={1.5}
-                />
-                More
-              </Link>
-            )}
+                {selected.galleryUrl && (
+                  <Link
+                    href={selected.galleryUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group mt-4 inline-flex items-center gap-2 border-t border-white/10 pt-4 font-mono text-xs uppercase tracking-widest text-teal-300 transition-colors duration-200 hover:text-teal-200"
+                  >
+                    <Eye
+                      className="h-3.5 w-3.5 transition-transform duration-200 group-hover:scale-110"
+                      strokeWidth={1.5}
+                    />
+                    More
+                  </Link>
+                )}
+              </div>
+
+              {selected.notebookUrl && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpenNotebook({
+                      pdfUrl: selected.notebookUrl!,
+                      title: selected.notebookTitle ?? selected.name,
+                    })
+                  }
+                  aria-label={`Open notebook for ${selected.name}`}
+                  title="Open notebook"
+                  className="group relative shrink-0 overflow-hidden rounded-md transition-transform duration-200"
+                >
+                  <Image
+                    src="/notebook-icon.jpg"
+                    alt="Open notebook"
+                    width={112}
+                    height={112}
+                    className="h-[112px] w-[112px] object-cover transition-transform duration-300 ease-precise group-hover:scale-105"
+                  />
+                </button>
+              )}
+            </div>
           </div>
         </div>
+      )}
+
+      {openNotebook && (
+        <NotebookViewer
+          pdfUrl={openNotebook.pdfUrl}
+          title={openNotebook.title}
+          onClose={() => setOpenNotebook(null)}
+        />
       )}
     </div>
   );
