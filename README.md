@@ -1,9 +1,7 @@
 # Madaly G — Portfolio
 
-A minimalistic, dark-themed developer portfolio built with Next.js (App
-Router), Tailwind CSS v4, and Lucide React. Designed for a creative
-multihyphenate working across software engineering, computational physics,
-and electrical engineering.
+My minimalistic, dark-themed portfolio built with Next.js (App
+Router), Tailwind CSS v4, and Lucide React.
 
 ## Stack
 
@@ -56,10 +54,10 @@ lib/
   utils.ts                cn() + formatDate() helpers
 ```
 
-## Content
+## Automatic Content
 
-All copy/data lives in `lib/data/*.ts` — update these files to change the
-bio, projects, research papers, or social links without touching any
+All copy/data lives in `lib/data/*.ts` — update these files to automatically change the
+bio, projects, research papers, or social links without needing to touch any
 component markup.
 
 `components/ui/pattern-tile.tsx` renders a generative SVG pattern (circuit
