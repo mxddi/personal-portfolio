@@ -41,14 +41,9 @@ export function SiteHeader() {
       <div className="container-page flex h-16 items-center justify-between">
         <Link
           href="/"
-          className="group flex items-center gap-2 font-mono text-base tracking-tight text-zinc-950"
+          className="font-mono text-xl tracking-tight text-zinc-950 transition-colors duration-200 hover:text-accent"
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-sm border border-zinc-200 bg-zinc-50 text-sm text-accent transition-colors group-hover:border-accent/50">
-            MG
-          </span>
-          <span className="hidden text-zinc-600 sm:inline">
-            /madaly-g
-          </span>
+          M<span className="text-accent">/</span>G
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

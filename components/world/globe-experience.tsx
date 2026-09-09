@@ -27,8 +27,8 @@ interface LocationPoint {
   notebooks: TravelNotebook[];
 }
 
-const ACCENT = "#2dd4bf";
-const ACCENT_DIM = "#0d9488";
+const ACCENT = "#5eead4";
+const ACCENT_DIM = "#2dd4bf";
 
 export function GlobeExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -180,7 +180,7 @@ export function GlobeExperience() {
           ringsData={ringsData}
           ringLat="lat"
           ringLng="lng"
-          ringColor={() => (t: number) => `rgba(45, 212, 191, ${1 - t})`}
+          ringColor={() => (t: number) => `rgba(94, 234, 212, ${1 - t})`}
           ringMaxRadius={3.2}
           ringPropagationSpeed={2}
           ringRepeatPeriod={1400}
