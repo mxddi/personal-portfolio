@@ -13,7 +13,8 @@ export function Hero() {
             style={{ gridArea: "heading" }}
             className="animate-fade-up min-w-0 max-w-4xl text-balance text-5xl font-medium leading-[1.1] tracking-tight text-zinc-950 opacity-0 sm:text-6xl md:text-7xl"
           >
-            Hi, I&apos;m <span className="text-accent">Madaly</span>
+           {/* Hi, I&apos;m <span className="text-accent">Madaly</span> */}
+           <span className="text-accent">MADALY</span>
           </h1>
 
           <div
@@ -27,7 +28,8 @@ export function Hero() {
             style={{ gridArea: "bio" }}
             className="animate-fade-up max-w-2xl text-balance text-lg leading-relaxed text-zinc-700 opacity-0 [animation-delay:80ms] sm:text-xl"
           >
-            — a multipassionate software engineer and computational physicist
+            {/*— a multipassionate software engineer and computational physicist*/}
+            Multipassionate software engineer and computational physicist
             building
             systems at the intersection of{" "}
             <span className="text-zinc-950">code</span>,{" "}

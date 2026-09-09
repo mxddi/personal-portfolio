@@ -7,7 +7,10 @@ import Link from "next/link";
 import Papa from "papaparse";
 import { Eye, X } from "lucide-react";
 import type { GlobeMethods } from "react-globe.gl";
-import { getNotebookForLocation } from "@/lib/data/travel-notebooks";
+import {
+  getNotebooksForLocation,
+  type TravelNotebook,
+} from "@/lib/data/travel-notebooks";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 const NotebookViewer = dynamic(
@@ -20,8 +23,8 @@ interface LocationPoint {
   lat: number;
   lng: number;
   galleryUrl: string | null;
-  notebookUrl: string | null;
-  notebookTitle: string | null;
+  /** A location can have more than one — the viewer lets visitors cycle between them. */
+  notebooks: TravelNotebook[];
 }
 
 const ACCENT = "#2dd4bf";
@@ -37,10 +40,9 @@ export function GlobeExperience() {
   const [loadError, setLoadError] = useState(false);
   const [selected, setSelected] = useState<LocationPoint | null>(null);
   const [globeReady, setGlobeReady] = useState(false);
-  const [openNotebook, setOpenNotebook] = useState<{
-    pdfUrl: string;
-    title: string;
-  } | null>(null);
+  const [openNotebooks, setOpenNotebooks] = useState<TravelNotebook[] | null>(
+    null
+  );
 
   // Measure container for a responsive canvas.
   useEffect(() => {
@@ -70,14 +72,12 @@ export function GlobeExperience() {
             const name = row["Location Name"]?.trim();
             const galleryUrl = row["galleryUrl"]?.trim() || null;
             if (!name || Number.isNaN(lat) || Number.isNaN(lng)) return null;
-            const notebook = getNotebookForLocation(name);
             return {
               name,
               lat,
               lng,
               galleryUrl,
-              notebookUrl: notebook?.pdfUrl ?? null,
-              notebookTitle: notebook?.title ?? null,
+              notebooks: getNotebooksForLocation(name),
             } as LocationPoint;
           })
           .filter((row): row is LocationPoint => row !== null);
@@ -122,7 +122,10 @@ export function GlobeExperience() {
   }, [locations, globeReady]);
 
   const ringsData = useMemo(
-    () => (locations ?? []).filter((d) => d.galleryUrl || d.notebookUrl),
+    () =>
+      (locations ?? []).filter(
+        (d) => d.galleryUrl || d.notebooks.length > 0
+      ),
     [locations]
   );
 
@@ -161,12 +164,14 @@ export function GlobeExperience() {
           pointAltitude={0.01}
           pointResolution={32}
           pointRadius={(d) =>
-            (d as LocationPoint).galleryUrl || (d as LocationPoint).notebookUrl
+            (d as LocationPoint).galleryUrl ||
+            (d as LocationPoint).notebooks.length > 0
               ? 0.45
               : 0.28
           }
           pointColor={(d) =>
-            (d as LocationPoint).galleryUrl || (d as LocationPoint).notebookUrl
+            (d as LocationPoint).galleryUrl ||
+            (d as LocationPoint).notebooks.length > 0
               ? ACCENT
               : ACCENT_DIM
           }
@@ -237,15 +242,10 @@ export function GlobeExperience() {
                 )}
               </div>
 
-              {selected.notebookUrl && (
+              {selected.notebooks.length > 0 && (
                 <button
                   type="button"
-                  onClick={() =>
-                    setOpenNotebook({
-                      pdfUrl: selected.notebookUrl!,
-                      title: selected.notebookTitle ?? selected.name,
-                    })
-                  }
+                  onClick={() => setOpenNotebooks(selected.notebooks)}
                   aria-label={`Open notebook for ${selected.name}`}
                   title="Open notebook"
                   className="group relative shrink-0 overflow-hidden rounded-md transition-transform duration-200"
@@ -264,11 +264,10 @@ export function GlobeExperience() {
         </div>
       )}
 
-      {openNotebook && (
+      {openNotebooks && (
         <NotebookViewer
-          pdfUrl={openNotebook.pdfUrl}
-          title={openNotebook.title}
-          onClose={() => setOpenNotebook(null)}
+          notebooks={openNotebooks}
+          onClose={() => setOpenNotebooks(null)}
         />
       )}
     </div>

@@ -15,7 +15,7 @@ export default function ProjectsPage() {
       <PageIntro
         eyebrow="Selected Work"
         title="Projects"
-        description="Three disciplines, documented in detail. Pick a category to see the full build log: tech/engineering stack, scope, and papers or repositories for each."
+        description="Three disciplines documented in detail. Pick a category to see the full build log: tech/engineering stack, scope, and papers or repositories for each."
       />
 
       <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">

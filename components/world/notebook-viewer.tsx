@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import type { TravelNotebook } from "@/lib/data/travel-notebooks";
 
 // react-pdf needs the pdf.js worker; load it from the same CDN the rest of
 // the /world page already relies on (react-globe.gl's textures) rather than
@@ -12,16 +13,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.vers
 const SWIPE_THRESHOLD = 50;
 
 interface NotebookViewerProps {
-  pdfUrl: string;
-  title: string;
+  /** One or more PDFs for the same location — visitors can cycle between them. */
+  notebooks: TravelNotebook[];
   onClose: () => void;
 }
 
-export function NotebookViewer({
-  pdfUrl,
-  title,
-  onClose,
-}: NotebookViewerProps) {
+export function NotebookViewer({ notebooks, onClose }: NotebookViewerProps) {
+  const [notebookIndex, setNotebookIndex] = useState(0);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   // Native page aspect ratio (height / width), read off the loaded PDF page
@@ -31,6 +29,9 @@ export function NotebookViewer({
   const boxRef = useRef<HTMLDivElement | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchDeltaX = useRef(0);
+
+  const notebook = notebooks[notebookIndex];
+  const hasMultipleNotebooks = notebooks.length > 1;
 
   // Track the actual space available for the page (this box already flexes
   // to fill whatever room is left after the title/counter/padding), so we
@@ -49,13 +50,19 @@ export function NotebookViewer({
     return () => observer.disconnect();
   }, []);
 
-  // Reset the known aspect ratio whenever we switch documents, so a stale
-  // ratio from the previous notebook can't flash before the new one loads.
+  // Reset the known aspect ratio and page whenever we switch documents, so
+  // a stale ratio (or page number) from the previous notebook can't flash
+  // before the new one loads.
   useEffect(() => {
     setPageAspect(null);
     setNumPages(null);
     setPageNumber(1);
-  }, [pdfUrl]);
+  }, [notebook.pdfUrl]);
+
+  const goPrevNotebook = () =>
+    setNotebookIndex((i) => Math.max(i - 1, 0));
+  const goNextNotebook = () =>
+    setNotebookIndex((i) => Math.min(i + 1, notebooks.length - 1));
 
   const goPrev = () => setPageNumber((p) => Math.max(p - 1, 1));
   const goNext = () => setPageNumber((p) => Math.min(p + 1, numPages ?? p));
@@ -131,8 +138,35 @@ export function NotebookViewer({
         </button>
       )}
 
+      {hasMultipleNotebooks && (
+        <div
+          className="flex shrink-0 items-center gap-3 font-mono text-[11px] uppercase tracking-widest text-zinc-500"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={goPrevNotebook}
+            disabled={notebookIndex === 0}
+            aria-label="Previous notebook"
+            className="rounded-sm p-1 transition-colors duration-200 hover:text-teal-300 disabled:pointer-events-none disabled:opacity-30"
+          >
+            <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.5} />
+          </button>
+          <span>
+            Notebook {notebookIndex + 1} / {notebooks.length}
+          </span>
+          <button
+            onClick={goNextNotebook}
+            disabled={notebookIndex === notebooks.length - 1}
+            aria-label="Next notebook"
+            className="rounded-sm p-1 transition-colors duration-200 hover:text-teal-300 disabled:pointer-events-none disabled:opacity-30"
+          >
+            <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.5} />
+          </button>
+        </div>
+      )}
+
       <p className="max-w-[90vw] shrink-0 text-center font-mono text-[11px] uppercase tracking-widest text-zinc-400 sm:max-w-md">
-        {title}
+        {notebook.title}
       </p>
 
       <div
@@ -151,7 +185,7 @@ export function NotebookViewer({
           onTouchEnd={handleTouchEnd}
         >
           <Document
-            file={pdfUrl}
+            file={notebook.pdfUrl}
             onLoadSuccess={({ numPages: n }) => setNumPages(n)}
             loading={
               <div className="flex h-full min-h-96 w-full items-center justify-center font-mono text-xs uppercase tracking-widest text-zinc-500">

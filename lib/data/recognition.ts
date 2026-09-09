@@ -146,16 +146,7 @@ export const awards: Award[] = [
     date: "2025-12-01",
     category: "volunteering",
     association: "University of Washington Bothell",
-  },
-
-  // ---------- Creative & Other ----------
-  {
-    slug: "executive-artwork-display",
-    title: 'Executive Artwork Display — Photograph: "Clear Vision"',
-    issuer: "Office of Superintendent of Public Instruction, State of Washington",
-    date: "2019-01-01",
-    category: "creative",
-  },
+  }
 ];
 
 export function getAwardsByCategory(category: string) {

@@ -11,7 +11,7 @@ export const pillars: Pillar[] = [
     index: "01",
     title: "Software Engineering",
     description:
-      "Three years building consumer and internal software at T-Mobile — full lifecycle, from architecture and algorithm design to CI/CD and deployment.",
+      "Three years building consumer and internal software at T-Mobile: the full lifecycle, from architecture and algorithm design to CI/CD and deployment.",
     skills: [
       "Python / Java / TypeScript / C++",
       "AWS · PostgreSQL · Node.js · Flask",
@@ -24,7 +24,7 @@ export const pillars: Pillar[] = [
     index: "02",
     title: "Computational Physics",
     description:
-      "Physics research applying machine learning and numerical methods to astrophysics data — from quasar outflows to orbital debris risk.",
+      "Physics research applying machine learning and numerical methods to astrophysics data, from quasar outflows to orbital debris risk.",
     skills: [
       "Monte Carlo Analysis",
       "Signal Processing (FFT, Denoising)",
@@ -37,7 +37,7 @@ export const pillars: Pillar[] = [
     index: "03",
     title: "Electrical & Hardware Systems",
     description:
-      "Hands-on hardware design — from a custom designed cloud chamber to laser optics experiments — combining circuits, sensors, and data into complete physical systems.",
+      "Hands-on hardware design, from a custom designed cloud chamber to laser optics experiments — combining circuits, sensors, and data into complete physical systems.",
     skills: [
       "Electrical / Hardware Interfacing",
       "CAD (Fusion 360) · 3D Printing",

@@ -14,14 +14,20 @@ export const travelNotebooks: TravelNotebook[] = [
       "In the Shadow of Alignment: Beyond the Melodrama of Traditional Depictions of a Total Solar Eclipse",
   },
   {
+    location: "Leon, Spain",
+    pdfUrl: "/notebooks/leon-spain-2.pdf",
+    title: "Ambiguity, Eclipses, and Hidden Power in Paradise Lost and León",
+  },
+  {
     location: "Paris, France",
     pdfUrl: "/notebooks/paris-france.pdf",
     title: "The Life and Work of Dr. Roger Penrose",
   },
 ];
 
-export function getNotebookForLocation(
+/** A location can have more than one notebook — the viewer lets visitors cycle between them. */
+export function getNotebooksForLocation(
   locationName: string
-): TravelNotebook | null {
-  return travelNotebooks.find((n) => n.location === locationName) ?? null;
+): TravelNotebook[] {
+  return travelNotebooks.filter((n) => n.location === locationName);
 }
