@@ -143,11 +143,23 @@ export function GlobeExperience() {
           showAtmosphere
           atmosphereColor={ACCENT}
           atmosphereAltitude={0.22}
-          onGlobeReady={() => setGlobeReady(true)}
+          onGlobeReady={() => {
+            setGlobeReady(true);
+            // Render at a higher internal resolution than the display's
+            // native pixel ratio (the library clamps to 2x by default) so
+            // points that sit close together stay crisp and distinguishable
+            // instead of anti-aliasing into a single blurry blob.
+            globeRef.current
+              ?.renderer()
+              .setPixelRatio(
+                Math.min(Math.max(window.devicePixelRatio, 2) * 1.5, 3)
+              );
+          }}
           pointsData={locations}
           pointLat="lat"
           pointLng="lng"
           pointAltitude={0.01}
+          pointResolution={32}
           pointRadius={(d) =>
             (d as LocationPoint).galleryUrl || (d as LocationPoint).notebookUrl
               ? 0.45
