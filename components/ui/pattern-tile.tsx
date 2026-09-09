@@ -16,7 +16,7 @@ export function PatternTile({ pattern, className }: PatternTileProps) {
   return (
     <div
       className={cn(
-        "absolute inset-0 overflow-hidden bg-zinc-50",
+        "absolute inset-0 overflow-hidden bg-zinc-50 dark:bg-zinc-900",
         className
       )}
       aria-hidden
@@ -83,8 +83,16 @@ export function PatternTile({ pattern, className }: PatternTileProps) {
           </pattern>
 
           <radialGradient id="tile-fade" cx="50%" cy="35%" r="75%">
-            <stop offset="0%" stopColor="white" stopOpacity="0" />
-            <stop offset="100%" stopColor="white" stopOpacity="0.9" />
+            <stop
+              offset="0%"
+              stopOpacity="0"
+              className="[stop-color:white] dark:[stop-color:#09090b]"
+            />
+            <stop
+              offset="100%"
+              stopOpacity="0.9"
+              className="[stop-color:white] dark:[stop-color:#09090b]"
+            />
           </radialGradient>
         </defs>
 
@@ -92,7 +100,7 @@ export function PatternTile({ pattern, className }: PatternTileProps) {
         <rect width="100%" height="100%" fill="url(#tile-fade)" />
       </svg>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent dark:from-zinc-950 dark:via-zinc-950/50" />
     </div>
   );
 }

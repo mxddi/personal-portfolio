@@ -37,11 +37,11 @@ export function SiteHeader() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/12 bg-white/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-black/12 bg-white/80 backdrop-blur-md dark:border-white/12 dark:bg-zinc-950/80">
       <div className="container-page flex h-16 items-center justify-between">
         <Link
           href="/"
-          className="font-mono text-xl tracking-tight text-zinc-950 transition-colors duration-200 hover:text-accent"
+          className="font-mono text-xl tracking-tight text-zinc-950 transition-colors duration-200 hover:text-accent dark:text-zinc-50"
         >
           M<span className="text-accent">/</span>G
         </Link>
@@ -56,8 +56,8 @@ export function SiteHeader() {
                 className={cn(
                   "relative rounded-sm px-3 py-2 font-mono text-sm uppercase tracking-widest transition-colors duration-200",
                   isActive
-                    ? "text-zinc-950"
-                    : "text-zinc-600 hover:text-zinc-900"
+                    ? "text-zinc-950 dark:text-zinc-50"
+                    : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
                 )}
               >
                 {link.label}
@@ -74,7 +74,7 @@ export function SiteHeader() {
           onClick={() => setIsMenuOpen((open) => !open)}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
-          className="flex h-9 w-9 items-center justify-center rounded-sm border border-zinc-200 text-zinc-700 transition-colors duration-200 hover:border-accent/40 hover:text-accent md:hidden"
+          className="flex h-9 w-9 items-center justify-center rounded-sm border border-zinc-200 text-zinc-700 transition-colors duration-200 hover:border-accent/40 hover:text-accent dark:border-zinc-800 dark:text-zinc-300 md:hidden"
         >
           {isMenuOpen ? (
             <X className="h-4 w-4" strokeWidth={1.5} />
@@ -85,7 +85,7 @@ export function SiteHeader() {
       </div>
 
       {isMenuOpen && (
-        <nav className="border-t border-black/12 bg-white md:hidden">
+        <nav className="border-t border-black/12 bg-white dark:border-white/12 dark:bg-zinc-950 md:hidden">
           <div className="container-page flex flex-col py-2">
             {NAV_LINKS.map((link) => {
               const isActive = isLinkActive(link.href);
@@ -97,7 +97,7 @@ export function SiteHeader() {
                     "rounded-sm px-2 py-3 font-mono text-sm uppercase tracking-widest transition-colors duration-200",
                     isActive
                       ? "text-accent"
-                      : "text-zinc-700 hover:text-zinc-950"
+                      : "text-zinc-700 hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-zinc-50"
                   )}
                 >
                   {link.label}

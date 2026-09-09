@@ -27,11 +27,11 @@ export function SectionHeading({
         <span className="h-px w-6 bg-accent/60" />
         {eyebrow}
       </div>
-      <h2 className="text-3xl font-medium tracking-tight text-zinc-950 sm:text-4xl">
+      <h2 className="text-3xl font-medium tracking-tight text-zinc-950 sm:text-4xl dark:text-zinc-50">
         {title}
       </h2>
       {description && (
-        <p className="max-w-2xl text-base leading-relaxed text-zinc-700">
+        <p className="max-w-2xl text-base leading-relaxed text-zinc-700 dark:text-zinc-400">
           {description}
         </p>
       )}

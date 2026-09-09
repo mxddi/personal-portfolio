@@ -34,7 +34,7 @@ export default async function TravelGalleryPage({ params }: PageProps) {
     <div className="container-page py-16 sm:py-20">
       <Link
         href="/world"
-        className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-zinc-600 transition-colors duration-200 hover:text-accent"
+        className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-zinc-600 transition-colors duration-200 hover:text-accent dark:text-zinc-400"
       >
         <ArrowLeft
           className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5"
@@ -43,12 +43,12 @@ export default async function TravelGalleryPage({ params }: PageProps) {
         World
       </Link>
 
-      <div className="mt-6 flex flex-col gap-4 border-b border-zinc-200 pb-10">
+      <div className="mt-6 flex flex-col gap-4 border-b border-zinc-200 pb-10 dark:border-zinc-800">
         <div className="flex items-center gap-2 font-mono text-sm uppercase tracking-[0.2em] text-accent">
           <span className="h-px w-6 bg-accent/60" />
           Gallery
         </div>
-        <h1 className="text-4xl font-medium tracking-tight text-zinc-950 sm:text-5xl">
+        <h1 className="text-4xl font-medium tracking-tight text-zinc-950 sm:text-5xl dark:text-zinc-50">
           {gallery.location}
         </h1>
       </div>

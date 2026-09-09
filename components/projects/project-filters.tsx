@@ -28,7 +28,7 @@ export function ProjectFilters({
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="flex items-center gap-1.5 pr-2 font-mono text-xs uppercase tracking-widest text-zinc-700">
+          <span className="flex items-center gap-1.5 pr-2 font-mono text-xs uppercase tracking-widest text-zinc-700 dark:text-zinc-300">
             <SlidersHorizontal className="h-3 w-3" strokeWidth={1.5} />
             Filter
           </span>
@@ -47,7 +47,7 @@ export function ProjectFilters({
           ))}
         </div>
 
-        <div className="flex items-center gap-1 self-start rounded-sm border border-zinc-200 p-0.5">
+        <div className="flex items-center gap-1 self-start rounded-sm border border-zinc-200 p-0.5 dark:border-zinc-800">
           <ViewButton
             active={view === "grid"}
             onClick={() => setView("grid")}
@@ -63,13 +63,15 @@ export function ProjectFilters({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 font-mono text-xs text-zinc-600">
+      <div className="flex items-center gap-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
         <span className="text-accent">{filtered.length}</span>
         {filtered.length === 1 ? "result" : "results"}
         {activeTag && (
           <>
             <span>for</span>
-            <span className="text-zinc-800">[{activeTag}]</span>
+            <span className="text-zinc-800 dark:text-zinc-200">
+              [{activeTag}]
+            </span>
           </>
         )}
       </div>
@@ -81,7 +83,7 @@ export function ProjectFilters({
           ))}
         </div>
       ) : (
-        <div className="flex flex-col divide-y divide-zinc-200 border-y border-zinc-200">
+        <div className="flex flex-col divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
           {filtered.map((project) => (
             <ProjectListRow key={project.slug} project={project} />
           ))}
@@ -89,8 +91,8 @@ export function ProjectFilters({
       )}
 
       {filtered.length === 0 && (
-        <div className="flex flex-col items-center gap-2 border border-dashed border-zinc-300 py-16 text-center">
-          <p className="font-mono text-base text-zinc-600">
+        <div className="flex flex-col items-center gap-2 border border-dashed border-zinc-300 py-16 text-center dark:border-zinc-700">
+          <p className="font-mono text-base text-zinc-600 dark:text-zinc-400">
             No projects match this filter.
           </p>
         </div>
@@ -115,7 +117,7 @@ function FilterChip({
         "rounded-sm border px-3 py-1.5 font-mono text-xs uppercase tracking-wide transition-colors duration-200",
         active
           ? "border-accent/40 bg-accent/10 text-accent"
-          : "border-zinc-200 text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"
+          : "border-zinc-200 text-zinc-600 hover:border-zinc-300 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:text-zinc-100"
       )}
     >
       {label}
@@ -141,7 +143,9 @@ function ViewButton({
       aria-pressed={active}
       className={cn(
         "rounded-[3px] p-1.5 transition-colors duration-200",
-        active ? "bg-zinc-100 text-accent" : "text-zinc-500 hover:text-zinc-800"
+        active
+          ? "bg-zinc-100 text-accent dark:bg-zinc-800"
+          : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
       )}
     >
       <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />

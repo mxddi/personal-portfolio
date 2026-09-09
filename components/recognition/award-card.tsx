@@ -5,9 +5,9 @@ import { formatDate } from "@/lib/utils";
 
 export function AwardCard({ award }: { award: Award }) {
   return (
-    <div className="flex flex-col gap-2 border-b border-zinc-200 py-6 last:border-b-0">
+    <div className="flex flex-col gap-2 border-b border-zinc-200 py-6 last:border-b-0 dark:border-zinc-800">
       <div className="flex flex-wrap items-start justify-between gap-2">
-        <h3 className="max-w-2xl text-lg font-medium leading-snug tracking-tight text-zinc-950">
+        <h3 className="max-w-2xl text-lg font-medium leading-snug tracking-tight text-zinc-950 dark:text-zinc-50">
           {award.title}
         </h3>
         <time
@@ -22,14 +22,14 @@ export function AwardCard({ award }: { award: Award }) {
         {award.issuer}
         {award.association && (
           <>
-            <span className="text-zinc-400"> · </span>
+            <span className="text-zinc-400 dark:text-zinc-600"> · </span>
             {award.association}
           </>
         )}
       </p>
 
       {award.summary && (
-        <p className="max-w-2xl text-sm leading-relaxed text-zinc-700">
+        <p className="max-w-2xl text-sm leading-relaxed text-zinc-700 dark:text-zinc-400">
           {award.summary}
         </p>
       )}

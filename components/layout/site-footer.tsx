@@ -1,12 +1,13 @@
 import { Mail } from "lucide-react";
 import { SOCIAL_LINKS } from "@/lib/data/social";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons/brand-icons";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-black/12">
+    <footer className="border-t border-black/12 dark:border-white/12">
       <div className="container-page flex flex-col items-center gap-4 py-10 sm:flex-row sm:justify-between">
-        <p className="font-mono text-sm text-zinc-600">
+        <p className="font-mono text-sm text-zinc-600 dark:text-zinc-400">
           © {new Date().getFullYear()} Madaly G.
         </p>
 
@@ -25,12 +26,16 @@ export function SiteFooter() {
                 target={link.icon !== "mail" ? "_blank" : undefined}
                 rel="noreferrer"
                 aria-label={link.label}
-                className="rounded-sm p-2 text-zinc-600 transition-colors duration-200 hover:text-accent"
+                className="rounded-sm p-2 text-zinc-600 transition-colors duration-200 hover:text-accent dark:text-zinc-400"
               >
                 <Icon className="h-4 w-4" strokeWidth={1.5} />
               </a>
             );
           })}
+
+          <span className="mx-1 h-4 w-px bg-zinc-200 dark:bg-zinc-800" />
+
+          <ThemeToggle />
         </div>
       </div>
     </footer>

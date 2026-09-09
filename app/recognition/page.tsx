@@ -28,8 +28,8 @@ export default function RecognitionPage() {
       <div className="mt-12 flex flex-col gap-14">
         {sections.map(({ category, items }) => (
           <section key={category.slug} className="flex flex-col gap-1">
-            <div className="border-b border-zinc-200 pb-4">
-              <h2 className="text-xl font-medium tracking-tight text-zinc-950 sm:text-2xl">
+            <div className="border-b border-zinc-200 pb-4 dark:border-zinc-800">
+              <h2 className="text-xl font-medium tracking-tight text-zinc-950 sm:text-2xl dark:text-zinc-50">
                 {category.label}
               </h2>
             </div>

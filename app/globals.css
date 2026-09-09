@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Manual (class-based) dark mode — toggled via `.dark` on <html> by
+ * ThemeToggle, rather than only following `prefers-color-scheme`. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ---------------------------------------------------------------------- */
 /* Theme tokens (Tailwind v4 CSS-first config)                            */
 /* ---------------------------------------------------------------------- */
@@ -27,13 +31,25 @@
     scroll-behavior: smooth;
   }
 
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
-    @apply bg-white text-zinc-800 antialiased text-[17px];
+    @apply bg-white text-zinc-800 antialiased text-[17px] transition-colors duration-300;
     font-feature-settings: "ss01", "ss02", "cv01";
+  }
+
+  html.dark body {
+    @apply bg-zinc-950 text-zinc-300;
   }
 
   ::selection {
     @apply bg-accent/20 text-zinc-950;
+  }
+
+  html.dark ::selection {
+    @apply bg-accent/30 text-zinc-50;
   }
 
   /* Slim, quiet scrollbar */
@@ -52,6 +68,12 @@
   }
   ::-webkit-scrollbar-thumb:hover {
     background-color: rgb(0 0 0 / 0.22);
+  }
+  html.dark ::-webkit-scrollbar-thumb {
+    background-color: rgb(255 255 255 / 0.14);
+  }
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(255 255 255 / 0.24);
   }
 }
 
@@ -78,6 +100,16 @@
       black 40%,
       transparent 100%
     );
+  }
+
+  html.dark .bg-grid-fade {
+    background-image: linear-gradient(
+        to right,
+        rgb(255 255 255 / 0.06) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+    background-size: 44px 44px;
   }
 
   .container-page {
@@ -152,4 +184,58 @@
 
 @utility animate-fade-in {
   animation: fade-in 0.8s ease-out forwards;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Aurora backdrop — dark mode only, drifting behind the hero              */
+/* ---------------------------------------------------------------------- */
+@keyframes aurora-drift-a {
+  0%,
+  100% {
+    transform: translate3d(-6%, -4%, 0) scale(1) rotate(-6deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate3d(8%, 6%, 0) scale(1.25) rotate(-2deg);
+    opacity: 0.85;
+  }
+}
+
+@keyframes aurora-drift-b {
+  0%,
+  100% {
+    transform: translate3d(6%, 4%, 0) scale(1.1) rotate(4deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(-10%, -6%, 0) scale(1.3) rotate(9deg);
+    opacity: 0.7;
+  }
+}
+
+@keyframes aurora-drift-c {
+  0%,
+  100% {
+    transform: translate3d(-4%, 6%, 0) scale(1) rotate(-2deg);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate3d(9%, -8%, 0) scale(1.2) rotate(3deg);
+    opacity: 0.6;
+  }
+}
+
+.aurora-band {
+  position: absolute;
+  border-radius: 999px;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-band {
+    animation: none !important;
+    opacity: 0.4 !important;
+    transform: none !important;
+  }
 }

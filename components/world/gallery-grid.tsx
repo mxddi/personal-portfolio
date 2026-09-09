@@ -66,7 +66,7 @@ export function GalleryGrid({ images, location }: GalleryGridProps) {
             key={src}
             type="button"
             onClick={() => setOpenIndex(i)}
-            className="relative aspect-square cursor-zoom-in overflow-hidden rounded-md border border-zinc-200 bg-zinc-50"
+            className="relative aspect-square cursor-zoom-in overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900"
           >
             <Image
               src={src}

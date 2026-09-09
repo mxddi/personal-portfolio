@@ -23,7 +23,7 @@ export function ProfilePhoto() {
 
   return (
     <div className="relative w-28 min-[375px]:w-40 sm:w-44 md:w-52 lg:w-64 xl:w-72">
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-sm border border-zinc-200 bg-zinc-50">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-sm border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
         {src ? (
           <Image
             src={src}
@@ -34,9 +34,9 @@ export function ProfilePhoto() {
             priority
           />
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-zinc-500">
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-zinc-500 dark:text-zinc-500">
             <User className="h-5 w-5 sm:h-8 sm:w-8" strokeWidth={1.25} />
-            <span className="font-mono text-xl font-medium tracking-tight text-zinc-400 sm:text-5xl">
+            <span className="font-mono text-xl font-medium tracking-tight text-zinc-400 sm:text-5xl dark:text-zinc-600">
               MG
             </span>
           </div>
