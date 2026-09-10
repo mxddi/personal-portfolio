@@ -32,3 +32,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Cursor / local agent setup (keep on disk, don't publish)
+.cursor/
+.cursorrules
+AGENTS.md
+CLAUDE.md
