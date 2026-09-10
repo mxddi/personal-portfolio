@@ -167,11 +167,11 @@
           <p>Drag files in to add, drag to reorder, X to remove, then save.</p>
         </div>
         <div class="actions">
-          <button class="add" id="add" disabled>Add photos</button>
+          <button class="add" id="add" disabled>Add media</button>
           <button class="save" id="save" disabled>Save order</button>
         </div>
       </header>
-      <input id="file" type="file" accept="image/*,.heic,.heif,video/mp4,video/quicktime,video/webm,.mov,.mp4" multiple hidden />
+      <input id="file" type="file" accept="image/*,video/*,.heic,.heif,.mov,.mp4,.m4v,.webm" multiple hidden />
       <div class="drop-hint">Drop to add to this gallery</div>
       <div class="grid" id="grid">
         <p class="empty">Pick a location.</p>
@@ -193,7 +193,18 @@
       let locationName = "Gallery sorter";
 
       function isVideo(name) {
-        return /\.(mp4|mov|webm)$/i.test(name);
+        return /\.(mp4|mov|webm|m4v)$/i.test(name);
+      }
+
+      function uploadName(file) {
+        const named = file.name || "";
+        if (file.type.startsWith("video/") && !isVideo(named)) {
+          const base = named.replace(/\.[^.]+$/, "") || "clip";
+          if (file.type.includes("webm")) return `${base}.webm`;
+          if (file.type.includes("quicktime")) return `${base}.mov`;
+          return `${base}.mp4`;
+        }
+        return named || (file.type.startsWith("video/") ? "clip.mp4" : "photo.jpg");
       }
 
       async function loadLocations() {
@@ -330,7 +341,7 @@
         addBtn.disabled = true;
         addBtn.textContent = "Adding…";
         const body = new FormData();
-        for (const file of files) body.append("files", file, file.name);
+        for (const file of files) body.append("files", file, uploadName(file));
         const res = await fetch(`/api/gallery/${current}/add`, {
           method: "POST",
           body,
@@ -338,7 +349,7 @@
         if (!res.ok) {
           alert((await res.text()) || "Add failed");
           addBtn.disabled = false;
-          addBtn.textContent = "Add photos";
+          addBtn.textContent = "Add media";
           return;
         }
         const saved = await res.json();
@@ -346,7 +357,10 @@
         dirty = false;
         saveBtn.disabled = true;
         addBtn.disabled = false;
-        addBtn.textContent = "Add photos";
+        addBtn.textContent = "Add media";
+        if (saved.skipped && saved.skipped.length) {
+          alert("Skipped:\n" + saved.skipped.join("\n"));
+        }
         loadLocations();
         render();
       }

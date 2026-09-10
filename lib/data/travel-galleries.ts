@@ -25,7 +25,7 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "sintra-portugal",
     location: "Sintra, Portugal",
-    images: buildImages("sintra-portugal", 10),
+    images: buildImages("sintra-portugal", 7),
   },
   {
     slug: "astorga-spain",
@@ -112,7 +112,7 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "paris-france",
     location: "Paris, France",
-    images: buildImages("paris-france", 8),
+    images: buildImages("paris-france", 5),
   },
   {
     slug: "zagreb-croatia",
@@ -122,7 +122,7 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "landivy-france",
     location: "Landivy, France",
-    images: buildImages("landivy-france", 10),
+    images: buildImages("landivy-france", 5),
   },
 ];
 

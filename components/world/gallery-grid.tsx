@@ -10,7 +10,44 @@ interface GalleryGridProps {
 }
 
 function isVideo(src: string) {
-  return /\.(mp4|mov|webm)$/i.test(src);
+  return /\.(mp4|mov|webm|m4v)$/i.test(src);
+}
+
+function AutoplayVideo({
+  src,
+  className,
+  preload,
+}: {
+  src: string;
+  className: string;
+  preload: "metadata" | "auto";
+}) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.muted = true;
+    const play = () => {
+      el.play().catch(() => {});
+    };
+    play();
+    el.addEventListener("canplay", play);
+    return () => el.removeEventListener("canplay", play);
+  }, [src]);
+
+  return (
+    <video
+      ref={ref}
+      src={src}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload={preload}
+      className={className}
+    />
+  );
 }
 
 // Minimum horizontal drag distance (px) before a touch gesture counts as a swipe.
@@ -73,12 +110,8 @@ export function GalleryGrid({ images, location }: GalleryGridProps) {
             className="relative aspect-square cursor-zoom-in overflow-hidden rounded-xs bg-zinc-50 dark:bg-zinc-900"
           >
             {isVideo(src) ? (
-              <video
+              <AutoplayVideo
                 src={src}
-                autoPlay
-                muted
-                loop
-                playsInline
                 preload="metadata"
                 className="h-full w-full object-cover"
               />
@@ -87,6 +120,7 @@ export function GalleryGrid({ images, location }: GalleryGridProps) {
                 src={src}
                 alt={location}
                 fill
+                quality={75}
                 className="object-cover transition-transform duration-500 ease-precise hover:scale-105"
                 sizes="(min-width: 640px) 33vw, 50vw"
               />
@@ -142,13 +176,9 @@ export function GalleryGrid({ images, location }: GalleryGridProps) {
             onTouchEnd={handleTouchEnd}
           >
             {isVideo(images[openIndex]) ? (
-              <video
+              <AutoplayVideo
                 key={images[openIndex]}
                 src={images[openIndex]}
-                autoPlay
-                muted
-                loop
-                playsInline
                 preload="auto"
                 className="max-h-[90vh] max-w-[90vw] object-contain"
               />
@@ -158,6 +188,7 @@ export function GalleryGrid({ images, location }: GalleryGridProps) {
                 alt={location}
                 className="max-h-[90vh] max-w-[90vw] select-none object-contain"
                 draggable={false}
+                decoding="async"
               />
             )}
           </div>

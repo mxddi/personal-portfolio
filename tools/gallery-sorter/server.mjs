@@ -13,10 +13,23 @@ const INDEX = path.join(__dirname, "index.html");
 const HOST = "127.0.0.1";
 const PORT = 3333;
 
-const MEDIA_RE = /^\d{2}\.(jpe?g|png|webp|mp4|mov|webm)$/i;
+const MEDIA_RE = /^\d{2}\.(jpe?g|png|webp|mp4|mov|webm|m4v)$/i;
 const SLUG_RE = /^[a-z0-9-]+$/;
 const IMAGE_EXT = new Set([".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"]);
 const VIDEO_EXT = new Set([".mp4", ".mov", ".webm", ".m4v"]);
+const HEIF_BRANDS = new Set([
+  "heic",
+  "heix",
+  "hevc",
+  "hevx",
+  "mif1",
+  "msf1",
+  "heif",
+  "heim",
+  "heis",
+]);
+const ICLOUD_THUMB_RE = /_4_\d+_c\./i;
+const MIN_PHOTO_EDGE = 640;
 
 function listMedia(slug) {
   const dir = path.join(TRAVEL, slug);
@@ -118,12 +131,11 @@ function parseMultipart(buf, contentType) {
     if (bodyEnd >= 2 && buf[bodyEnd - 2] === 13 && buf[bodyEnd - 1] === 10) {
       bodyEnd -= 2;
     }
-    const nameMatch = headers.match(/filename\*?=(?:UTF-8''|")(.*?)(?:"|;|$)/i);
-    const filename = nameMatch
-      ? decodeURIComponent(nameMatch[1].replace(/"/g, ""))
-      : "";
-    if (filename) {
-      files.push({ filename, buffer: buf.slice(headerEnd + 4, bodyEnd) });
+    const filename = parseFilename(headers);
+    const mime = parsePartMime(headers);
+    const buffer = buf.slice(headerEnd + 4, bodyEnd);
+    if (filename || buffer.length) {
+      files.push({ filename, mime, buffer });
     }
     start = next;
   }
@@ -136,15 +148,132 @@ function nextIndex(slug) {
   return Math.max(...files.map((f) => parseInt(f, 10))) + 1;
 }
 
+function parseFilename(headers) {
+  const star = headers.match(/filename\*\s*=\s*UTF-8''([^;\r\n]+)/i);
+  if (star) return decodeURIComponent(star[1].trim().replace(/"/g, ""));
+  const quoted = headers.match(/filename\s*=\s*"((?:\\.|[^"\\])*)"/i);
+  if (quoted) return quoted[1].replace(/\\"/g, '"');
+  const plain = headers.match(/filename\s*=\s*([^;\r\n]+)/i);
+  if (plain) return plain[1].trim().replace(/"/g, "");
+  return "";
+}
+
+function parsePartMime(headers) {
+  const m = headers.match(/Content-Type:\s*([^;\r\n]+)/i);
+  return m ? m[1].trim() : "";
+}
+
+function sniffKind(buf, filename, mime) {
+  const ext = path.extname(filename || "").toLowerCase();
+  const mimeL = (mime || "").toLowerCase();
+
+  if (buf.length >= 12 && buf.slice(4, 8).toString("ascii") === "ftyp") {
+    const brand = buf
+      .slice(8, 12)
+      .toString("ascii")
+      .replace(/\0/g, "")
+      .trim()
+      .toLowerCase();
+    if (HEIF_BRANDS.has(brand)) return { kind: "image", ext: ".heic" };
+    return { kind: "video", ext: ext === ".mov" ? ".mov" : ".mp4" };
+  }
+  if (buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8) {
+    return { kind: "image", ext: ".jpg" };
+  }
+  if (
+    buf.length >= 12 &&
+    buf.slice(0, 4).toString("ascii") === "RIFF" &&
+    buf.slice(8, 12).toString("ascii") === "WEBP"
+  ) {
+    return { kind: "image", ext: ".webp" };
+  }
+  if (
+    buf.length >= 8 &&
+    buf[0] === 0x89 &&
+    buf.slice(1, 4).toString("ascii") === "PNG"
+  ) {
+    return { kind: "image", ext: ".png" };
+  }
+  if (buf.length >= 4 && buf[0] === 0x1a && buf[1] === 0x45) {
+    return { kind: "video", ext: ".webm" };
+  }
+
+  if (
+    mimeL.startsWith("video/") ||
+    mimeL.includes("quicktime") ||
+    VIDEO_EXT.has(ext)
+  ) {
+    if (ext === ".webm" || mimeL.includes("webm")) {
+      return { kind: "video", ext: ".webm" };
+    }
+    if (ext === ".mov" || mimeL.includes("quicktime")) {
+      return { kind: "video", ext: ".mov" };
+    }
+    return { kind: "video", ext: ".mp4" };
+  }
+  if (mimeL.startsWith("image/") || IMAGE_EXT.has(ext)) {
+    return { kind: "image", ext: IMAGE_EXT.has(ext) ? ext : ".jpg" };
+  }
+  return null;
+}
+
+function imageSize(filePath) {
+  const result = spawnSync(
+    "sips",
+    ["-g", "pixelWidth", "-g", "pixelHeight", filePath],
+    { encoding: "utf8" }
+  );
+  const width = Number((result.stdout.match(/pixelWidth:\s+(\d+)/) || [])[1]);
+  const height = Number((result.stdout.match(/pixelHeight:\s+(\d+)/) || [])[1]);
+  return { width, height };
+}
+
 function convertImage(src, dest) {
   const result = spawnSync(
     "sips",
-    ["-s", "format", "jpeg", "-s", "formatOptions", "86", src, "--out", dest],
+    ["-s", "format", "jpeg", "-s", "formatOptions", "95", src, "--out", dest],
     { encoding: "utf8" }
   );
   if (result.status !== 0) {
     throw new Error(result.stderr || `Could not convert ${path.basename(src)}`);
   }
+}
+
+function writeVideo(buffer, srcExt, destBase) {
+  const inExt = VIDEO_EXT.has(srcExt) ? srcExt : ".mov";
+  if (inExt === ".mp4" || inExt === ".webm") {
+    const dest = `${destBase}${inExt}`;
+    fs.writeFileSync(dest, buffer);
+    return path.basename(dest);
+  }
+
+  const tmp = path.join(os.tmpdir(), `gallery-vid-${Date.now()}${inExt}`);
+  fs.writeFileSync(tmp, buffer);
+  const dest = `${destBase}.mp4`;
+  const converted = spawnSync(
+    "avconvert",
+    [
+      "--source",
+      tmp,
+      "--output",
+      dest,
+      "--preset",
+      "PresetHighestQuality",
+      "--replace",
+    ],
+    { encoding: "utf8" }
+  );
+  try {
+    fs.unlinkSync(tmp);
+  } catch {
+    /* ignore */
+  }
+  if (converted.status === 0 && fs.existsSync(dest) && fs.statSync(dest).size > 0) {
+    return path.basename(dest);
+  }
+  const fallback = `${destBase}${inExt}`;
+  fs.writeFileSync(fallback, buffer);
+  return path.basename(fallback);
 }
 
 function addUploads(slug, uploads) {
@@ -153,30 +282,49 @@ function addUploads(slug, uploads) {
     throw new Error("Unknown gallery");
   }
   let n = nextIndex(slug);
+  const skipped = [];
   for (const file of uploads) {
-    const ext = path.extname(file.filename).toLowerCase();
-    if (IMAGE_EXT.has(ext)) {
-      const tmp = path.join(os.tmpdir(), `gallery-add-${Date.now()}-${n}${ext}`);
-      fs.writeFileSync(tmp, file.buffer);
-      try {
-        convertImage(tmp, path.join(dir, `${String(n).padStart(2, "0")}.jpg`));
-      } finally {
-        fs.unlinkSync(tmp);
-      }
-    } else if (VIDEO_EXT.has(ext)) {
-      const outExt = ext === ".m4v" ? ".mp4" : ext;
-      fs.writeFileSync(
-        path.join(dir, `${String(n).padStart(2, "0")}${outExt}`),
-        file.buffer
-      );
+    const label = file.filename || "untitled";
+    if (ICLOUD_THUMB_RE.test(label)) {
+      skipped.push(`${label} (iCloud thumbnail)`);
+      continue;
+    }
+    const kind = sniffKind(file.buffer, file.filename, file.mime);
+    if (!kind) {
+      skipped.push(`${label} (unsupported)`);
+      continue;
+    }
+    const destBase = path.join(dir, String(n).padStart(2, "0"));
+    if (kind.kind === "video") {
+      writeVideo(file.buffer, kind.ext, destBase);
     } else {
-      throw new Error(`Unsupported file: ${file.filename}`);
+      const tmp = path.join(
+        os.tmpdir(),
+        `gallery-add-${Date.now()}-${n}${kind.ext}`
+      );
+      fs.writeFileSync(tmp, file.buffer);
+      const dest = `${destBase}.jpg`;
+      try {
+        convertImage(tmp, dest);
+        const { width, height } = imageSize(dest);
+        if (Math.max(width, height) < MIN_PHOTO_EDGE) {
+          fs.unlinkSync(dest);
+          skipped.push(`${label} (too small to use at full quality)`);
+          continue;
+        }
+      } finally {
+        try {
+          fs.unlinkSync(tmp);
+        } catch {
+          /* ignore */
+        }
+      }
     }
     n += 1;
   }
   const files = listMedia(slug);
   patchGalleriesTs(slug, files);
-  return files;
+  return { files, skipped };
 }
 
 function send(res, status, body, type = "text/plain; charset=utf-8") {
@@ -197,6 +345,7 @@ const TYPES = {
   ".mp4": "video/mp4",
   ".mov": "video/quicktime",
   ".webm": "video/webm",
+  ".m4v": "video/mp4",
 };
 
 const server = http.createServer(async (req, res) => {
@@ -237,8 +386,8 @@ const server = http.createServer(async (req, res) => {
         req.headers["content-type"]
       );
       if (!uploads.length) throw new Error("No files received");
-      const files = addUploads(addMatch[1], uploads);
-      return sendJson(res, { ok: true, files });
+      const { files, skipped } = addUploads(addMatch[1], uploads);
+      return sendJson(res, { ok: true, files, skipped });
     }
 
     const mediaMatch = url.pathname.match(
