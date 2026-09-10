@@ -40,7 +40,7 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "chiang-mai-thailand",
     location: "Chiang Mai, Thailand",
-    images: buildImages("chiang-mai-thailand", 8),
+    images: buildImages("chiang-mai-thailand", 12),
   },
   {
     slug: "rome-italy",
@@ -55,7 +55,7 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "shkoder-albania",
     location: "Shkoder, Albania",
-    images: buildImages("shkoder-albania", 4),
+    images: buildImages("shkoder-albania", 18),
   },
   {
     slug: "los-angeles-california",
@@ -85,7 +85,26 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "fethiye-turkey",
     location: "Fethiye, Turkey",
-    images: buildImages("fethiye-turkey", 1),
+    images: [
+      ...buildImages("fethiye-turkey", 12),
+      "/travel/fethiye-turkey/13.mp4",
+      "/travel/fethiye-turkey/14.jpg",
+      "/travel/fethiye-turkey/15.jpg",
+      "/travel/fethiye-turkey/16.jpg",
+      "/travel/fethiye-turkey/17.mp4",
+      "/travel/fethiye-turkey/18.jpg",
+      "/travel/fethiye-turkey/19.jpg",
+    ],
+  },
+  {
+    slug: "paris-france",
+    location: "Paris, France",
+    images: buildImages("paris-france", 1),
+  },
+  {
+    slug: "zagreb-croatia",
+    location: "Zagreb, Croatia",
+    images: buildImages("zagreb-croatia", 1),
   },
 ];
 

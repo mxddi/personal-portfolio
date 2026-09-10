@@ -2,7 +2,7 @@ Location Name,Latitude,Longitude,galleryUrl
 "San Antonio, Texas",29.4241,-98.4936,
 Montana,46.8797,-110.3626,
 "Denver, Colorado",39.7392,-104.9903,/world/denver-colorado
-"Paris, France",48.8566,2.3522,
+"Paris, France",48.8566,2.3522,/world/paris-france
 "St. Petersburg, Florida",27.7676,-82.6403,
 "Tampa, Florida",27.9506,-82.4572,
 "Baltimore, Maryland",39.2904,-76.6122,
@@ -24,7 +24,7 @@ Washington D.C.,38.9072,-77.0369,/world/washington-dc
 "Shkoder, Albania",42.0683,19.5126,/world/shkoder-albania
 "Tirana, Albania",41.3275,19.8187,
 "Podgorica, Montenegro",42.4304,19.2594,
-"Zagreb, Croatia",45.8150,15.9819,
+"Zagreb, Croatia",45.8150,15.9819,/world/zagreb-croatia
 "Lima, Peru",-12.0464,-77.0428,
 Mexico,23.6345,-102.5528,
 "Vancouver, Canada",49.2827,-123.1207,

@@ -9,6 +9,10 @@ interface GalleryGridProps {
   location: string;
 }
 
+function isVideo(src: string) {
+  return /\.(mp4|mov|webm)$/i.test(src);
+}
+
 // Minimum horizontal drag distance (px) before a touch gesture counts as a swipe.
 const SWIPE_THRESHOLD = 50;
 
@@ -66,15 +70,27 @@ export function GalleryGrid({ images, location }: GalleryGridProps) {
             key={src}
             type="button"
             onClick={() => setOpenIndex(i)}
-            className="relative aspect-square cursor-zoom-in overflow-hidden rounded-md border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900"
+            className="relative aspect-square cursor-zoom-in overflow-hidden rounded-xs bg-zinc-50 dark:bg-zinc-900"
           >
-            <Image
-              src={src}
-              alt={location}
-              fill
-              className="object-cover transition-transform duration-500 ease-precise hover:scale-105"
-              sizes="(min-width: 640px) 33vw, 50vw"
-            />
+            {isVideo(src) ? (
+              <video
+                src={src}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <Image
+                src={src}
+                alt={location}
+                fill
+                className="object-cover transition-transform duration-500 ease-precise hover:scale-105"
+                sizes="(min-width: 640px) 33vw, 50vw"
+              />
+            )}
           </button>
         ))}
       </div>
@@ -125,12 +141,25 @@ export function GalleryGrid({ images, location }: GalleryGridProps) {
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <img
-              src={images[openIndex]}
-              alt={location}
-              className="max-h-[90vh] max-w-[90vw] select-none object-contain"
-              draggable={false}
-            />
+            {isVideo(images[openIndex]) ? (
+              <video
+                key={images[openIndex]}
+                src={images[openIndex]}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                className="max-h-[90vh] max-w-[90vw] object-contain"
+              />
+            ) : (
+              <img
+                src={images[openIndex]}
+                alt={location}
+                className="max-h-[90vh] max-w-[90vw] select-none object-contain"
+                draggable={false}
+              />
+            )}
           </div>
 
           {images.length > 1 && (
