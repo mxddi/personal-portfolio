@@ -12,8 +12,8 @@ const NAV_LINKS = [
   { href: "/world", label: "World" },
   { href: "/projects", label: "Projects" },
   { href: "/research", label: "Research" },
-  { href: "/real-estate", label: "Real Estate" },
   { href: "/flight-log", label: "Flight Log" },
+  { href: "/real-estate", label: "Real Estate" },
   { href: "/recognition", label: "Recognition" },
 ];
 
