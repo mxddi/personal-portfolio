@@ -161,6 +161,7 @@ export function AuroraCanvas() {
 
     // ---- resize ------------------------------------------------------------
     function handleResize() {
+      if (!THREE) return;
       const w = container!.clientWidth;
       const h = container!.clientHeight;
       if (w === 0 || h === 0) return;

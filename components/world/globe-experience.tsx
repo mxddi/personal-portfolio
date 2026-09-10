@@ -13,6 +13,7 @@ import {
   DirectionalLight,
   Mesh,
   MeshPhongMaterial,
+  Texture,
 } from "three";
 import type { GlobeMethods } from "react-globe.gl";
 import {
@@ -98,19 +99,33 @@ function drawLandOceanTint(
   ctx.globalCompositeOperation = "source-over";
 }
 
+function imageSize(src: unknown): { width: number; height: number } {
+  if (src && typeof src === "object" && "width" in src && "height" in src) {
+    return { width: Number(src.width), height: Number(src.height) };
+  }
+  return { width: 0, height: 0 };
+}
+
+function asCanvasSource(image: unknown): CanvasImageSource | null {
+  if (
+    image instanceof HTMLImageElement ||
+    image instanceof HTMLCanvasElement ||
+    image instanceof ImageBitmap
+  ) {
+    return image;
+  }
+  return null;
+}
+
 function neutralizeNightMap(
-  map: {
-    image: CanvasImageSource;
-    needsUpdate: boolean;
-  },
+  map: Texture,
   landMask?: CanvasImageSource | null
 ) {
   const already =
     map.image instanceof HTMLCanvasElement &&
     map.image.dataset.nightProcessed === "1";
   const src = map.image;
-  const width = "width" in src ? Number(src.width) : 0;
-  const height = "height" in src ? Number(src.height) : 0;
+  const { width, height } = imageSize(src);
   if (!width || !height) return;
 
   const canvas = already
@@ -127,7 +142,7 @@ function neutralizeNightMap(
     // The 8K night map's dark land is magenta. Hue-shift toward cyan and
     // crush saturation so continents read as a flat blue-gray.
     ctx.filter = "hue-rotate(-48deg) saturate(32%) brightness(1.22)";
-    ctx.drawImage(src, 0, 0);
+    ctx.drawImage(src as CanvasImageSource, 0, 0);
     ctx.filter = "none";
     canvas.dataset.nightProcessed = "1";
     map.image = canvas;
@@ -299,18 +314,15 @@ export function GlobeExperience() {
               }
               if (material.side === BackSide) return;
 
+              const bumpImage = asCanvasSource(material.bumpMap?.image);
               const landMask =
-                material.bumpMap?.image &&
-                "width" in material.bumpMap.image &&
-                Number(material.bumpMap.image.width) > 0
-                  ? (material.bumpMap.image as CanvasImageSource)
-                  : null;
+                bumpImage && imageSize(bumpImage).width > 0 ? bumpImage : null;
               neutralizeNightMap(material.map, landMask);
               if (!landMask) {
-                const topology = new Image();
+                const topology = document.createElement("img");
                 topology.crossOrigin = "anonymous";
                 topology.onload = () => {
-                  neutralizeNightMap(material.map, topology);
+                  if (material.map) neutralizeNightMap(material.map, topology);
                   material.needsUpdate = true;
                 };
                 topology.src =
