@@ -26,7 +26,7 @@ export function ResearchCard({ paper }: { paper: ResearchPaper }) {
             className={cn(
               "transition-transform duration-700 ease-precise",
               paper.imageContain
-                ? "object-contain bg-white p-1.5 dark:bg-zinc-950"
+                ? "bg-white object-contain p-1.5"
                 : "object-cover object-top group-hover:scale-[1.04]"
             )}
             sizes="160px"
