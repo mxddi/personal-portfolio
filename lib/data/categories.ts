@@ -15,7 +15,7 @@ export const categories: ProjectCategory[] = [
     label: "Computational Physics",
     shortLabel: "Physics",
     description:
-      "Monte Carlo simulation, quantum optics experiments, and data analysis rooted in physics.",
+      "Rooted in physics.",
     pattern: "orbit",
     index: "02",
   },
@@ -24,7 +24,7 @@ export const categories: ProjectCategory[] = [
     label: "Electrical Engineering",
     shortLabel: "EE Systems",
     description:
-      "Hands-on circuits and hardware builds — from optical data links to a custom built electric cloud chamber device.",
+      "Hands-on circuits and hardware builds.",
     pattern: "circuit",
     index: "03",
   },
