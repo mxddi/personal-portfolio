@@ -120,7 +120,8 @@ export const travelGalleries: TravelGallery[] = [
       "/travel/paris-france/05.jpg",
       "/travel/paris-france/06.jpg",
       "/travel/paris-france/07.jpg",
-      "/travel/paris-france/08.jpg"
+      "/travel/paris-france/08.jpg",
+      "/travel/paris-france/09.jpg"
     ],
   },
   {
