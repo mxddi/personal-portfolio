@@ -20,7 +20,7 @@ import type * as Three from "three";
  *   - capped device pixel ratio
  *   - fewer noise octaves / lower star density / lower target FPS on mobile
  *   - IntersectionObserver pauses the rAF loop when scrolled out of view
- *   - reduced-motion / no-WebGL / low-core devices get a static CSS fallback
+ *   - reduced-motion or missing WebGL skip the scene entirely
  */
 export function AuroraCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -59,16 +59,10 @@ export function AuroraCanvas() {
       }
     })();
 
-    // Crude low-power-device heuristic — a real product would also check
-    // `navigator.connection?.saveData` and a GPU tier library, but core
-    // count alone is enough to avoid the shader on the lowest tier.
-    const lowEndDevice =
-      typeof navigator !== "undefined" &&
-      typeof navigator.hardwareConcurrency === "number" &&
-      navigator.hardwareConcurrency > 0 &&
-      navigator.hardwareConcurrency <= 2;
-
-    setUseFallback(prefersReducedMotion || !hasWebGL || lowEndDevice);
+    // Do not key off hardwareConcurrency — iOS Safari often reports `2`
+    // for every iPhone as an anti-fingerprinting measure, which would
+    // incorrectly skip the live shader.
+    setUseFallback(prefersReducedMotion || !hasWebGL);
   }, []);
 
   useEffect(() => {
@@ -95,12 +89,16 @@ export function AuroraCanvas() {
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
-      antialias: !isMobile,
-      powerPreference: "high-performance",
+      antialias: false,
+      depth: false,
+      stencil: false,
+      powerPreference: isMobile ? "default" : "high-performance",
+      failIfMajorPerformanceCaveat: false,
     });
+    renderer.setClearColor(0x000000, 0);
     // Adaptive DPR cap — stops a 3x-DPR phone from rendering at full
     // Retina resolution and overloading its GPU/thermal budget.
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.5));
     renderer.setSize(container.clientWidth, container.clientHeight);
 
     const uniforms = {
@@ -188,6 +186,8 @@ export function AuroraCanvas() {
     );
     intersectionObserver.observe(container);
 
+    handleResize();
+
     // ---- render loop, frame-rate capped, paused when offscreen ----------
     let rafId = 0;
     let lastFrameTime = 0;
@@ -230,7 +230,7 @@ export function AuroraCanvas() {
   if (useFallback === null) return null;
 
   if (useFallback) {
-    return <AuroraFallback />;
+    return null;
   }
 
   return (
@@ -267,26 +267,6 @@ export function AuroraCanvas() {
   );
 }
 
-/**
- * Static, dependency-free fallback for `prefers-reduced-motion: reduce`,
- * missing WebGL support, or low-core-count devices — same green-hugging-
- * the-horizon-fading-to-red palette and framing, but a plain CSS radial
- * gradient instead of a running shader, so there's zero animation and
- * zero GPU cost.
- */
-function AuroraFallback() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 hidden dark:block"
-      style={{
-        background:
-          "radial-gradient(ellipse 95% 18% at 50% 86%, rgba(180,220,255,0.18) 0%, transparent 55%), radial-gradient(ellipse 92% 28% at 50% 80%, rgba(80,230,110,0.22) 0%, transparent 60%), radial-gradient(ellipse 80% 42% at 50% 62%, rgba(180,30,90,0.16) 0%, transparent 70%), linear-gradient(to bottom, transparent 84%, rgb(9 9 11) 100%)",
-      }}
-    />
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Shaders
 // ---------------------------------------------------------------------------
@@ -306,6 +286,9 @@ function buildFragmentShader(highQuality: boolean) {
   // constant, which is both faster and safer across GPU drivers.
   const octaves = highQuality ? 5 : 2;
   const starDensity = highQuality ? 220.0 : 110.0;
+  const earthCenterY = highQuality ? -2.02 : -2.16;
+  const ceilingLo = highQuality ? 0.13 : 0.06;
+  const ceilingHi = highQuality ? 0.24 : 0.15;
 
   return `
     precision ${highQuality ? "highp" : "mediump"} float;
@@ -388,7 +371,7 @@ function buildFragmentShader(highQuality: boolean) {
 
       // ---- Earth's limb — aurora sits under the stats row ----
       float earthR = 1.7;
-      vec2 earthCenter = vec2(0.0, -2.02);
+      vec2 earthCenter = vec2(0.0, ${earthCenterY.toFixed(2)});
       float distToEarth = length(p - earthCenter) - earthR; // > 0 above the surface
 
       // thin, bright atmospheric rim — the electric blue-white edge seen
@@ -451,7 +434,7 @@ function buildFragmentShader(highQuality: boolean) {
       // fade toward the heading above, and cap height so the top of the
       // glow sits below the Degree / Upcoming / Focus row (uv.y → 0 bottom)
       float auroraTopFade = 1.0 - smoothstep(0.48, 0.82, uv.y);
-      float auroraCeiling = 1.0 - smoothstep(0.13, 0.24, uv.y);
+      float auroraCeiling = 1.0 - smoothstep(${ceilingLo.toFixed(2)}, ${ceilingHi.toFixed(2)}, uv.y);
       float auroraScreen = auroraTopFade * auroraCeiling;
       float auroraLimb = smoothstep(-0.16, 0.05, distToEarth);
       col += auroraColor * auroraLimb * auroraScreen;
