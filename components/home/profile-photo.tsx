@@ -23,7 +23,7 @@ export function ProfilePhoto() {
 
   return (
     <div className="relative w-36 min-[375px]:w-44 sm:w-44 md:w-52 lg:w-64 xl:w-72">
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-sm border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-sm bg-zinc-50 dark:bg-zinc-900">
         {src ? (
           <Image
             src={src}

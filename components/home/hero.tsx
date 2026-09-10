@@ -23,7 +23,7 @@ export function Hero() {
           <div className="hero-grid relative">
             <h1
               style={{ gridArea: "heading" }}
-              className="animate-fade-up min-w-0 max-w-4xl text-balance text-5xl font-medium leading-[1.1] tracking-tight text-zinc-950 opacity-0 sm:text-6xl md:text-7xl dark:text-zinc-50"
+              className="animate-fade-up min-w-0 max-w-4xl text-balance text-center text-5xl font-medium leading-[1.1] tracking-tight text-zinc-950 opacity-0 sm:text-left sm:text-6xl md:text-7xl dark:text-zinc-50"
             >
               {/* Hi, I&apos;m <span className="text-accent">Madaly</span> */}
               <span className="text-zinc-950 dark:text-zinc-50">MADALY</span>
@@ -31,14 +31,14 @@ export function Hero() {
 
             <div
               style={{ gridArea: "photo" }}
-              className="animate-fade-up shrink-0 justify-self-start opacity-0 [animation-delay:120ms] sm:justify-self-auto"
+              className="animate-fade-up shrink-0 justify-self-center opacity-0 [animation-delay:120ms] sm:justify-self-auto"
             >
               <ProfilePhoto />
             </div>
 
             <p
               style={{ gridArea: "bio" }}
-              className="animate-fade-up max-w-2xl text-balance text-lg leading-relaxed text-zinc-700 opacity-0 [animation-delay:80ms] sm:text-xl dark:text-zinc-300"
+              className="animate-fade-up mx-auto max-w-2xl text-balance text-center text-lg leading-relaxed text-zinc-700 opacity-0 [animation-delay:80ms] sm:mx-0 sm:text-left sm:text-xl dark:text-zinc-300"
             >
               {/*— a multipassionate software engineer and computational physicist*/}
               Multipassionate software engineer and computational physicist
@@ -65,7 +65,7 @@ export function Hero() {
 
             <div
               style={{ gridArea: "cta" }}
-              className="animate-fade-up flex flex-wrap items-center gap-4 pt-2 opacity-0 [animation-delay:160ms]"
+              className="animate-fade-up flex flex-wrap items-center justify-center gap-4 pt-2 opacity-0 [animation-delay:160ms] sm:justify-start"
             >
               <Link
                 href="/projects"
