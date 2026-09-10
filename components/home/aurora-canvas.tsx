@@ -385,7 +385,7 @@ function buildFragmentShader(highQuality: boolean) {
       // tip stays low in the frame and the upper portion (behind the
       // hero heading/bio) is plain starfield ----
       float earthR = 1.7;
-      vec2 earthCenter = vec2(0.0, -2.02);
+      vec2 earthCenter = vec2(0.0, -2.05);
       float distToEarth = length(p - earthCenter) - earthR; // > 0 above the surface
 
       // thin, bright atmospheric rim right at the horizon line — the
