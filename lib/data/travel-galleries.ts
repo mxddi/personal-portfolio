@@ -112,7 +112,7 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "paris-france",
     location: "Paris, France",
-    images: buildImages("paris-france", 5),
+    images: buildImages("paris-france", 9),
   },
   {
     slug: "zagreb-croatia",
@@ -122,7 +122,7 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "landivy-france",
     location: "Landivy, France",
-    images: buildImages("landivy-france", 5),
+    images: buildImages("landivy-france", 10),
   },
 ];
 

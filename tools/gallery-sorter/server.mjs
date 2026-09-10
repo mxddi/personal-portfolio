@@ -409,6 +409,10 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+server.requestTimeout = 0;
+server.headersTimeout = 0;
+server.timeout = 0;
+
 server.listen(PORT, HOST, () => {
   const href = `http://${HOST}:${PORT}`;
   console.log(`Gallery sorter (local only): ${href}`);
