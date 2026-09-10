@@ -10,7 +10,7 @@ export default function NotFound() {
       <h1 className="text-4xl font-medium tracking-tight text-zinc-950 sm:text-5xl dark:text-zinc-50">
         Segment not found
       </h1>
-      <p className="max-w-md text-base leading-relaxed text-zinc-700 dark:text-zinc-400">
+      <p className="max-w-md text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
         The route you requested doesn&apos;t resolve to anything in this
         system. It may have been moved, renamed, or never existed.
       </p>

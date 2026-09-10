@@ -15,7 +15,7 @@ export function PageIntro({ eyebrow, title, description }: PageIntroProps) {
         {title}
       </h1>
       {description && (
-        <p className="max-w-2xl text-base leading-relaxed text-zinc-700 sm:text-lg dark:text-zinc-400">
+        <p className="max-w-2xl text-base leading-relaxed text-zinc-700 sm:text-lg dark:text-zinc-300">
           {description}
         </p>
       )}

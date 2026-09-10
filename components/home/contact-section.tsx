@@ -36,20 +36,20 @@ export function ContactSection() {
                 className="group flex items-center justify-between gap-4 bg-white p-6 transition-colors duration-300 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900"
               >
                 <div className="flex items-center gap-4">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-zinc-200 text-zinc-500 transition-colors duration-300 group-hover:border-accent/40 group-hover:text-accent dark:border-zinc-800">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-zinc-200 text-zinc-600 transition-colors duration-300 group-hover:border-accent/40 group-hover:text-accent dark:border-zinc-800">
                     <Icon className="h-4 w-4" strokeWidth={1.5} />
                   </span>
                   <div className="flex flex-col">
                     <span className="text-base font-medium text-zinc-900 dark:text-zinc-100">
                       {link.label}
                     </span>
-                    <span className="font-mono text-sm text-zinc-600 dark:text-zinc-400">
+                    <span className="font-mono text-sm text-zinc-700 dark:text-zinc-300">
                       {link.handle}
                     </span>
                   </div>
                 </div>
                 <ArrowUpRight
-                  className="h-4 w-4 text-zinc-500 transition-all duration-300 ease-precise group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent"
+                  className="h-4 w-4 text-zinc-600 transition-all duration-300 ease-precise group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent"
                   strokeWidth={1.5}
                 />
               </a>

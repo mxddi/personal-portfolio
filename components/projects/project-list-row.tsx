@@ -17,7 +17,7 @@ export function ProjectListRow({ project }: { project: Project }) {
       {...externalProps}
       className="group grid grid-cols-1 items-start gap-3 py-5 transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-900 sm:grid-cols-12 sm:items-center sm:gap-4 sm:px-4"
     >
-      <div className="flex items-center gap-2 font-mono text-sm text-zinc-600 dark:text-zinc-400 sm:col-span-2">
+      <div className="flex items-center gap-2 font-mono text-sm text-zinc-700 dark:text-zinc-300 sm:col-span-2">
         <time dateTime={project.date}>{formatDate(project.date)}</time>
       </div>
 
@@ -30,17 +30,17 @@ export function ProjectListRow({ project }: { project: Project }) {
             </span>
           )}
           {project.classified && (
-            <span className="font-mono text-xs font-normal text-zinc-400 dark:text-zinc-600">
+            <span className="font-mono text-xs font-normal text-zinc-500 dark:text-zinc-500">
               | Classified
             </span>
           )}
         </h3>
-        <p className="line-clamp-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="line-clamp-1 text-sm text-zinc-700 dark:text-zinc-300">
           {project.summary}
         </p>
       </div>
 
-      <div className="font-mono text-xs text-zinc-600 dark:text-zinc-400 sm:col-span-3">
+      <div className="font-mono text-xs text-zinc-700 dark:text-zinc-300 sm:col-span-3">
         {project.stack.join(" · ")}
       </div>
 
@@ -54,7 +54,7 @@ export function ProjectListRow({ project }: { project: Project }) {
 
       <div className="hidden justify-end sm:col-span-1 sm:flex">
         <ArrowUpRight
-          className="h-3.5 w-3.5 text-zinc-500 opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent group-hover:opacity-100"
+          className="h-3.5 w-3.5 text-zinc-600 opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-accent group-hover:opacity-100"
           strokeWidth={1.5}
         />
       </div>

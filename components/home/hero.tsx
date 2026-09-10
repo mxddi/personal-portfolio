@@ -31,14 +31,14 @@ export function Hero() {
 
             <div
               style={{ gridArea: "photo" }}
-              className="animate-fade-up shrink-0 justify-self-end opacity-0 [animation-delay:120ms] sm:justify-self-auto"
+              className="animate-fade-up shrink-0 justify-self-start opacity-0 [animation-delay:120ms] sm:justify-self-auto"
             >
               <ProfilePhoto />
             </div>
 
             <p
               style={{ gridArea: "bio" }}
-              className="animate-fade-up max-w-2xl text-balance text-lg leading-relaxed text-zinc-700 opacity-0 [animation-delay:80ms] sm:text-xl dark:text-zinc-400"
+              className="animate-fade-up max-w-2xl text-balance text-lg leading-relaxed text-zinc-700 opacity-0 [animation-delay:80ms] sm:text-xl dark:text-zinc-300"
             >
               {/*— a multipassionate software engineer and computational physicist*/}
               Multipassionate software engineer and computational physicist
@@ -99,7 +99,7 @@ export function Hero() {
                 { label: "Focus", value: "Data / Autonomy" },
               ].map((item) => (
                 <div key={item.label} className="flex flex-col gap-1">
-                  <dt className="uppercase tracking-widest text-zinc-500 dark:text-zinc-500">
+                  <dt className="uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
                     {item.label}
                   </dt>
                   <dd className="text-zinc-900 dark:text-zinc-100">

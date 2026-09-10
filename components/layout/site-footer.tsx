@@ -7,7 +7,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-black/12 dark:border-white/12">
       <div className="container-page flex flex-col items-center gap-4 py-10 sm:flex-row sm:justify-between">
-        <p className="font-mono text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="font-mono text-sm text-zinc-700 dark:text-zinc-300">
           © {new Date().getFullYear()} Madaly G.
         </p>
 
@@ -26,7 +26,7 @@ export function SiteFooter() {
                 target={link.icon !== "mail" ? "_blank" : undefined}
                 rel="noreferrer"
                 aria-label={link.label}
-                className="rounded-sm p-2 text-zinc-600 transition-colors duration-200 hover:text-accent dark:text-zinc-400"
+                className="rounded-sm p-2 text-zinc-700 transition-colors duration-200 hover:text-accent dark:text-zinc-300"
               >
                 <Icon className="h-4 w-4" strokeWidth={1.5} />
               </a>

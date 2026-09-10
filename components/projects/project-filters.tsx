@@ -63,7 +63,7 @@ export function ProjectFilters({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+      <div className="flex items-center gap-2 font-mono text-xs text-zinc-700 dark:text-zinc-300">
         <span className="text-accent">{filtered.length}</span>
         {filtered.length === 1 ? "result" : "results"}
         {activeTag && (
@@ -92,7 +92,7 @@ export function ProjectFilters({
 
       {filtered.length === 0 && (
         <div className="flex flex-col items-center gap-2 border border-dashed border-zinc-300 py-16 text-center dark:border-zinc-700">
-          <p className="font-mono text-base text-zinc-600 dark:text-zinc-400">
+          <p className="font-mono text-base text-zinc-700 dark:text-zinc-300">
             No projects match this filter.
           </p>
         </div>
@@ -117,7 +117,7 @@ function FilterChip({
         "rounded-sm border px-3 py-1.5 font-mono text-xs uppercase tracking-wide transition-colors duration-200",
         active
           ? "border-accent/40 bg-accent/10 text-accent"
-          : "border-zinc-200 text-zinc-600 hover:border-zinc-300 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:text-zinc-100"
+          : "border-zinc-200 text-zinc-700 hover:border-zinc-300 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:text-zinc-100"
       )}
     >
       {label}
@@ -145,7 +145,7 @@ function ViewButton({
         "rounded-[3px] p-1.5 transition-colors duration-200",
         active
           ? "bg-zinc-100 text-accent dark:bg-zinc-800"
-          : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+          : "text-zinc-600 hover:text-zinc-800 dark:hover:text-zinc-200"
       )}
     >
       <Icon className="h-3.5 w-3.5" strokeWidth={1.5} />

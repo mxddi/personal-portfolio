@@ -374,8 +374,11 @@ function buildFragmentShader(highQuality: boolean) {
       float starRand = hash(starCell);
       if (starRand > 0.978) {
         float brightness = 0.55 + 0.45 * fract(starRand * 17.0);
+        // small, sharp pinpoints rather than soft glowing orbs — most are
+        // tiny, a few slightly larger/brighter, like real star magnitudes
+        float starSize = 0.045 + 0.09 * fract(starRand * 31.0);
         float d = length(fract(starUv) - 0.5);
-        col += vec3(0.9, 0.95, 1.0) * smoothstep(0.5, 0.0, d) * brightness * 0.95;
+        col += vec3(0.9, 0.95, 1.0) * smoothstep(starSize, 0.0, d) * brightness * 0.95;
       }
 
       // ---- Earth's limb, pushed further down so the aurora's colorful

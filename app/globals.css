@@ -117,27 +117,29 @@
   }
 
   /*
-   * Hero layout grid. On mobile, only the heading sits beside the profile
-   * photo — the bio, CTAs, and stats flow full-width beneath both. From
-   * `sm` up, the photo spans the full height of the text column instead
-   * (heading + bio + CTAs + stats stacked to its left), matching the
-   * original side-by-side desktop layout.
+   * Hero layout grid. On mobile, everything stacks in a single column —
+   * heading, then the profile photo directly beneath the name, then bio,
+   * CTAs, and stats. From `sm` up, the photo moves beside the text
+   * column instead, spanning its full height (heading + bio + CTAs +
+   * stats stacked to its left), matching the original side-by-side
+   * desktop layout.
    */
   .hero-grid {
     display: grid;
     align-items: start;
-    grid-template-columns: 1fr auto;
-    column-gap: 1.25rem;
-    row-gap: 1.5rem;
+    grid-template-columns: 1fr;
+    row-gap: 1.25rem;
     grid-template-areas:
-      "heading photo"
-      "bio bio"
-      "cta cta"
-      "stats stats";
+      "heading"
+      "photo"
+      "bio"
+      "cta"
+      "stats";
   }
 
   @media (min-width: 640px) {
     .hero-grid {
+      grid-template-columns: 1fr auto;
       column-gap: 2.5rem;
       row-gap: 2rem;
       grid-template-areas:

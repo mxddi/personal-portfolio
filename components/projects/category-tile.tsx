@@ -15,11 +15,11 @@ export function CategoryTile({ category }: { category: ProjectCategory }) {
       />
 
       <div className="relative z-10 flex items-center justify-between px-6 pt-6">
-        <span className="font-mono text-sm text-zinc-600 transition-colors duration-300 group-hover:text-accent dark:text-zinc-400">
+        <span className="font-mono text-sm text-zinc-700 transition-colors duration-300 group-hover:text-accent dark:text-zinc-300">
           {category.index}
         </span>
         <ArrowUpRight
-          className="h-4 w-4 -translate-x-1 translate-y-1 text-zinc-600 opacity-0 transition-all duration-300 ease-precise group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-accent group-hover:opacity-100 dark:text-zinc-400"
+          className="h-4 w-4 -translate-x-1 translate-y-1 text-zinc-700 opacity-0 transition-all duration-300 ease-precise group-hover:translate-x-0 group-hover:translate-y-0 group-hover:text-accent group-hover:opacity-100 dark:text-zinc-300"
           strokeWidth={1.5}
         />
       </div>
@@ -28,7 +28,7 @@ export function CategoryTile({ category }: { category: ProjectCategory }) {
         <h3 className="text-2xl font-medium tracking-tight text-zinc-950 sm:text-3xl dark:text-zinc-50">
           {category.label}
         </h3>
-        <p className="max-w-xs text-base leading-relaxed text-zinc-700 dark:text-zinc-400">
+        <p className="max-w-xs text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
           {category.description}
         </p>
       </div>

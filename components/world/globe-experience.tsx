@@ -188,7 +188,7 @@ export function GlobeExperience() {
       )}
 
       {!locations && !loadError && (
-        <div className="absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-widest text-zinc-500">
+        <div className="absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-widest text-zinc-300">
           Loading globe…
         </div>
       )}
@@ -199,7 +199,7 @@ export function GlobeExperience() {
         </div>
       )}
 
-      <div className="pointer-events-none absolute bottom-4 left-4 font-mono text-[11px] uppercase tracking-widest text-zinc-500">
+      <div className="pointer-events-none absolute bottom-4 left-4 font-mono text-[11px] uppercase tracking-widest text-zinc-300">
         Drag to rotate · Scroll to zoom · Tap location to enter
       </div>
 
@@ -215,7 +215,7 @@ export function GlobeExperience() {
             <button
               onClick={() => setSelected(null)}
               aria-label="Close"
-              className="absolute right-3 top-3 text-zinc-500 transition-colors duration-200 hover:text-zinc-200"
+              className="absolute right-3 top-3 text-zinc-300 transition-colors duration-200 hover:text-zinc-200"
             >
               <X className="h-4 w-4" strokeWidth={1.5} />
             </button>

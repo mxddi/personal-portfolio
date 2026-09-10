@@ -21,7 +21,7 @@ export function ResearchCard({ paper }: { paper: ResearchPaper }) {
           pattern={paper.pattern}
           className="transition-transform duration-700 ease-precise group-hover:scale-[1.05]"
         />
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 text-zinc-600 transition-colors duration-300 group-hover:text-accent dark:text-zinc-400">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 text-zinc-700 transition-colors duration-300 group-hover:text-accent dark:text-zinc-300">
           <FileText className="h-6 w-6" strokeWidth={1.25} />
           {href && (
             <span className="font-mono text-[11px] uppercase tracking-widest">
@@ -44,7 +44,7 @@ export function ResearchCard({ paper }: { paper: ResearchPaper }) {
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+        <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-zinc-700 dark:text-zinc-300">
           <time dateTime={paper.date}>{formatDate(paper.date)}</time>
           {paper.ongoing && (
             <span className="rounded-sm border border-accent/30 bg-accent/10 px-1.5 py-0.5 text-[11px] uppercase tracking-widest text-accent-dim">
@@ -53,13 +53,13 @@ export function ResearchCard({ paper }: { paper: ResearchPaper }) {
           )}
           {paper.venue && (
             <>
-              <span className="text-zinc-400 dark:text-zinc-600">/</span>
+              <span className="text-zinc-500 dark:text-zinc-500">/</span>
               <span>{paper.venue}</span>
             </>
           )}
         </div>
 
-        <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-400">
+        <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
           {paper.summary}
         </p>
 

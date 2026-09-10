@@ -12,24 +12,24 @@ export function AwardCard({ award }: { award: Award }) {
         </h3>
         <time
           dateTime={award.date}
-          className="whitespace-nowrap font-mono text-xs text-zinc-500"
+          className="whitespace-nowrap font-mono text-xs text-zinc-600"
         >
           {formatDate(award.date)}
         </time>
       </div>
 
-      <p className="font-mono text-xs uppercase tracking-widest text-zinc-500">
+      <p className="font-mono text-xs uppercase tracking-widest text-zinc-600">
         {award.issuer}
         {award.association && (
           <>
-            <span className="text-zinc-400 dark:text-zinc-600"> · </span>
+            <span className="text-zinc-500 dark:text-zinc-500"> · </span>
             {award.association}
           </>
         )}
       </p>
 
       {award.summary && (
-        <p className="max-w-2xl text-sm leading-relaxed text-zinc-700 dark:text-zinc-400">
+        <p className="max-w-2xl text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
           {award.summary}
         </p>
       )}

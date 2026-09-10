@@ -36,7 +36,7 @@ export function ProjectCard({ project }: { project: Project }) {
           <h3 className="text-xl font-medium tracking-tight text-zinc-950 transition-colors duration-300 group-hover:text-accent sm:text-2xl dark:text-zinc-50">
             {project.title}
           </h3>
-          <div className="flex items-center gap-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+          <div className="flex items-center gap-2 font-mono text-xs text-zinc-700 dark:text-zinc-300">
             <time dateTime={project.date}>{formatDate(project.date)}</time>
             {project.ongoing && (
               <span className="rounded-sm border border-accent/30 bg-accent/10 px-1.5 py-0.5 text-[11px] uppercase tracking-widest text-accent-dim">
@@ -44,7 +44,7 @@ export function ProjectCard({ project }: { project: Project }) {
               </span>
             )}
             {project.classified && (
-              <span className="text-zinc-400 dark:text-zinc-600">
+              <span className="text-zinc-500 dark:text-zinc-500">
                 | Classified
               </span>
             )}
@@ -57,15 +57,15 @@ export function ProjectCard({ project }: { project: Project }) {
         />
       </div>
 
-      <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-400">
+      <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
         {project.summary}
       </p>
 
-      <div className="flex flex-wrap gap-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
+      <div className="flex flex-wrap gap-2 font-mono text-xs text-zinc-700 dark:text-zinc-300">
         {project.stack.map((tech, i) => (
           <span key={tech} className="flex items-center gap-2">
             {i > 0 && (
-              <span className="text-zinc-400 dark:text-zinc-600">·</span>
+              <span className="text-zinc-500 dark:text-zinc-500">·</span>
             )}
             {tech}
           </span>

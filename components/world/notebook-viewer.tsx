@@ -140,7 +140,7 @@ export function NotebookViewer({ notebooks, onClose }: NotebookViewerProps) {
 
       {hasMultipleNotebooks && (
         <div
-          className="flex shrink-0 items-center gap-3 font-mono text-[11px] uppercase tracking-widest text-zinc-500"
+          className="flex shrink-0 items-center gap-3 font-mono text-[11px] uppercase tracking-widest text-zinc-300"
           onClick={(e) => e.stopPropagation()}
         >
           <button
@@ -165,7 +165,7 @@ export function NotebookViewer({ notebooks, onClose }: NotebookViewerProps) {
         </div>
       )}
 
-      <p className="max-w-[90vw] shrink-0 text-center font-mono text-[11px] uppercase tracking-widest text-zinc-400 sm:max-w-md">
+      <p className="max-w-[90vw] shrink-0 text-center font-mono text-[11px] uppercase tracking-widest text-zinc-300 sm:max-w-md">
         {notebook.title}
       </p>
 
@@ -188,7 +188,7 @@ export function NotebookViewer({ notebooks, onClose }: NotebookViewerProps) {
             file={notebook.pdfUrl}
             onLoadSuccess={({ numPages: n }) => setNumPages(n)}
             loading={
-              <div className="flex h-full min-h-96 w-full items-center justify-center font-mono text-xs uppercase tracking-widest text-zinc-500">
+              <div className="flex h-full min-h-96 w-full items-center justify-center font-mono text-xs uppercase tracking-widest text-zinc-300">
                 Loading notebook…
               </div>
             }
@@ -207,7 +207,7 @@ export function NotebookViewer({ notebooks, onClose }: NotebookViewerProps) {
               renderTextLayer={false}
               renderAnnotationLayer={false}
               loading={
-                <div className="flex h-full min-h-96 w-full items-center justify-center font-mono text-xs uppercase tracking-widest text-zinc-500">
+                <div className="flex h-full min-h-96 w-full items-center justify-center font-mono text-xs uppercase tracking-widest text-zinc-300">
                   Loading page…
                 </div>
               }
@@ -217,7 +217,7 @@ export function NotebookViewer({ notebooks, onClose }: NotebookViewerProps) {
       </div>
 
       {numPages !== null && (
-        <div className="shrink-0 font-mono text-xs uppercase tracking-widest text-zinc-400">
+        <div className="shrink-0 font-mono text-xs uppercase tracking-widest text-zinc-300">
           Page {pageNumber} / {numPages}
         </div>
       )}

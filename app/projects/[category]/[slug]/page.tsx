@@ -38,7 +38,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     <div className="container-page py-16 sm:py-20">
       <Link
         href={`/projects/${category.slug}`}
-        className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-zinc-600 transition-colors duration-200 hover:text-accent dark:text-zinc-400"
+        className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-widest text-zinc-700 transition-colors duration-200 hover:text-accent dark:text-zinc-300"
       >
         <ArrowLeft
           className="h-3.5 w-3.5 transition-transform duration-200 group-hover:-translate-x-0.5"
@@ -55,7 +55,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         <h1 className="max-w-3xl text-4xl font-medium tracking-tight text-zinc-950 sm:text-5xl dark:text-zinc-50">
           {project.title}
         </h1>
-        <div className="flex items-center gap-2 font-mono text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="flex items-center gap-2 font-mono text-sm text-zinc-700 dark:text-zinc-300">
           <time dateTime={project.date}>{formatDate(project.date)}</time>
           {project.ongoing && (
             <span className="rounded-sm border border-accent/30 bg-accent/10 px-1.5 py-0.5 text-xs uppercase tracking-widest text-accent-dim">
@@ -63,7 +63,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </span>
           )}
           {project.classified && (
-            <span className="text-zinc-400 dark:text-zinc-600">
+            <span className="text-zinc-500 dark:text-zinc-500">
               | Classified
             </span>
           )}
@@ -86,7 +86,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </div>
           )}
 
-          <p className="max-w-2xl text-base leading-relaxed text-zinc-700 sm:text-lg dark:text-zinc-400">
+          <p className="max-w-2xl text-base leading-relaxed text-zinc-700 sm:text-lg dark:text-zinc-300">
             {project.summary}
           </p>
 
@@ -113,7 +113,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </Link>
           )}
 
-          <span className="font-mono text-xs uppercase tracking-widest text-zinc-500">
+          <span className="font-mono text-xs uppercase tracking-widest text-zinc-600">
             Stack
           </span>
           <ul className="flex flex-col gap-2 font-mono text-sm text-zinc-800 dark:text-zinc-200">

@@ -46,7 +46,7 @@ export function ThemeToggle() {
       aria-label={
         theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
       }
-      className="relative flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-200 text-zinc-600 transition-colors duration-200 hover:border-accent/40 hover:text-accent dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-accent/40 dark:hover:text-accent"
+      className="relative flex h-8 w-8 items-center justify-center rounded-sm border border-zinc-200 text-zinc-700 transition-colors duration-200 hover:border-accent/40 hover:text-accent dark:border-zinc-800 dark:text-zinc-300 dark:hover:border-accent/40 dark:hover:text-accent"
     >
       <Sun
         className={`absolute h-4 w-4 transition-all duration-300 ease-precise ${

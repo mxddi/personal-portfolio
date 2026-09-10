@@ -31,7 +31,7 @@ export function SectionHeading({
         {title}
       </h2>
       {description && (
-        <p className="max-w-2xl text-base leading-relaxed text-zinc-700 dark:text-zinc-400">
+        <p className="max-w-2xl text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
           {description}
         </p>
       )}

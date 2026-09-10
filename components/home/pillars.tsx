@@ -27,11 +27,11 @@ export function Pillars() {
                 className="group relative flex flex-col gap-5 bg-white p-8 transition-colors duration-300 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-sm text-zinc-500">
+                  <span className="font-mono text-sm text-zinc-600">
                     {pillar.index}
                   </span>
                   <Icon
-                    className="h-5 w-5 text-zinc-500 transition-colors duration-300 group-hover:text-accent"
+                    className="h-5 w-5 text-zinc-600 transition-colors duration-300 group-hover:text-accent"
                     strokeWidth={1.5}
                   />
                 </div>
@@ -40,7 +40,7 @@ export function Pillars() {
                   {pillar.title}
                 </h3>
 
-                <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-400">
+                <p className="text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
                   {pillar.description}
                 </p>
 
@@ -48,7 +48,7 @@ export function Pillars() {
                   {pillar.skills.map((skill) => (
                     <li
                       key={skill}
-                      className="flex items-center gap-2 font-mono text-xs text-zinc-600 dark:text-zinc-400"
+                      className="flex items-center gap-2 font-mono text-xs text-zinc-700 dark:text-zinc-300"
                     >
                       <span className="h-1 w-1 rounded-full bg-zinc-300 transition-colors duration-300 group-hover:bg-accent dark:bg-zinc-700" />
                       {skill}
