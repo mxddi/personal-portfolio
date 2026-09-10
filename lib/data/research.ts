@@ -13,6 +13,8 @@ export const researchPapers: ResearchPaper[] = [
       "16th International NASA-ESA LISA Symposium — poster, with Dr. Paola Rodriguez Hidalgo (UW Bothell) & Dr. Bryna Hazelton (UW eScience Institute)",
     tags: ["Astrophysics", "Machine Learning"],
     pattern: "orbit",
+    fileUrl: "/research/lisa-symposium-poster-abstract.pdf",
+    image: "/research/lisa-symposium-poster-abstract.jpg",
   },
   {
     slug: "leo-debris-risk-private-satellites",
@@ -21,16 +23,19 @@ export const researchPapers: ResearchPaper[] = [
     summary:
       "A computational modeling study of orbital debris accumulation risk as commercial satellite constellations scale, examining how current collision-avoidance and de-orbit policy holds up against projected launch cadences.",
     date: "2025-09-01",
-    venue: "CROW Journal, Vol. 11",
+    venue: "CROW Journal, 2026 Online Journal",
     tags: ["Astrophysics", "Computational Modeling", "Aerospace"],
     pattern: "orbit",
+    fileUrl: "https://uwb.ds.lib.uw.edu/thecrow/2026-online-journal/",
+    image: "/research/leo-overcrowding-preview.png",
+    imageContain: true,
   },
   {
     slug: "quantum-computing-deep-space-missions",
     title:
       "Quantum Computing as a Means of Drastically Improving Efficiency of Deep Space Missions",
     summary:
-      "A research report examining where classical computation bottlenecks deep-space exploration — planetary classification, orbital calculation, and signal degradation over interplanetary distances — and evaluating quantum optimization algorithms, QKD, and entanglement-based teleportation as candidate replacements.",
+      "A research report examining where classical computation supports deep-space exploration — planetary classification, orbital calculation, and signal degradation over interplanetary distances — and evaluating quantum optimization algorithms, QKD, and entanglement-based teleportation as candidate replacements.",
     date: "2023-06-01",
     venue: "Edmonds College — Research Report",
     tags: ["Quantum Computing", "Aerospace"],

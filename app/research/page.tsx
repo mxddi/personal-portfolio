@@ -15,7 +15,7 @@ export default function ResearchPage() {
       <PageIntro
         eyebrow="Published & Ongoing"
         title="Research"
-        description="Formal writeups from coursework, independent study, and collaboration in astrophysics."
+        description= "Selected writeups from coursework, independent study, and collaboration in astrophysics."
       />
 
       <div className="mt-12 flex flex-col gap-4">

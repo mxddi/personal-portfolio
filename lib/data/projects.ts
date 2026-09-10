@@ -147,6 +147,9 @@ export const projects: Project[] = [
     stack: ["Python", "NumPy", "Matplotlib"],
     tags: ["Physics Simulation", "Numerical Methods"],
     date: "2026-02-01",
+    image: "/projects/monte-carlo-cover.png",
+    imageWidth: 990,
+    imageHeight: 724,
     links: {
       writeup: "/projects/monte-carlo-simulations-in-python.pdf",
     },

@@ -1,5 +1,6 @@
+import Image from "next/image";
 import { ResearchPaper } from "@/lib/types";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { Tag } from "@/components/ui/tag";
 import { PatternTile } from "@/components/ui/pattern-tile";
 import { FileText, ArrowUpRight } from "lucide-react";
@@ -17,18 +18,35 @@ export function ResearchCard({ paper }: { paper: ResearchPaper }) {
       className="group grid grid-cols-1 gap-6 border border-zinc-200 bg-white p-5 transition-all duration-300 ease-precise hover:border-accent/40 hover:bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900/60 sm:grid-cols-[160px_1fr] sm:p-6"
     >
       <div className="relative aspect-[4/5] w-full max-w-[160px] overflow-hidden rounded-sm border border-zinc-200 dark:border-zinc-800">
-        <PatternTile
-          pattern={paper.pattern}
-          className="transition-transform duration-700 ease-precise group-hover:scale-[1.05]"
-        />
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 text-zinc-700 transition-colors duration-300 group-hover:text-accent dark:text-zinc-300">
-          <FileText className="h-6 w-6" strokeWidth={1.25} />
-          {href && (
-            <span className="font-mono text-[11px] uppercase tracking-widest">
-              PDF
-            </span>
-          )}
-        </div>
+        {paper.image ? (
+          <Image
+            src={paper.image}
+            alt=""
+            fill
+            className={cn(
+              "transition-transform duration-700 ease-precise",
+              paper.imageContain
+                ? "object-contain bg-white p-1.5 dark:bg-zinc-950"
+                : "object-cover object-top group-hover:scale-[1.04]"
+            )}
+            sizes="160px"
+          />
+        ) : (
+          <>
+            <PatternTile
+              pattern={paper.pattern}
+              className="transition-transform duration-700 ease-precise group-hover:scale-[1.05]"
+            />
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 text-zinc-700 transition-colors duration-300 group-hover:text-accent dark:text-zinc-300">
+              <FileText className="h-6 w-6" strokeWidth={1.25} />
+              {href && (
+                <span className="font-mono text-[11px] uppercase tracking-widest">
+                  PDF
+                </span>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       <div className="flex flex-col gap-3">
