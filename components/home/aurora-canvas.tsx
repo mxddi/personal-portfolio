@@ -412,6 +412,12 @@ function buildFragmentShader(highQuality: boolean) {
       float curtainProfile = fbm(vec2(p.x * 1.6, uTime * 0.02));
       float curtainTop = 0.10 + curtainProfile * 0.05;
 
+      // compresses the whole aurora envelope (green + red band thresholds
+      // below) toward the horizon, independent of curtainTop's own
+      // definition — used to keep the entire glow, including its faint
+      // upper red haze, well clear of the hero copy above it
+      float hEnv = h * 3.4;
+
       // fine vertical ray striations ("fingers" of light), gently warped
       // so they drift and curl rather than sitting static — slow, lazy
       // motion rather than an active flicker
@@ -424,7 +430,7 @@ function buildFragmentShader(highQuality: boolean) {
 
       // green: brightest right at the limb, tapering out toward
       // curtainTop, textured by the ray striations
-      float greenFalloff = 1.0 - smoothstep(0.0, curtainTop, h);
+      float greenFalloff = 1.0 - smoothstep(0.0, curtainTop, hEnv);
       float green = greenFalloff * mix(0.3, 1.0, rays);
       vec3 greenColor = vec3(0.32, 1.0, 0.28);
 
@@ -437,8 +443,8 @@ function buildFragmentShader(highQuality: boolean) {
       // edge below, which is undefined for smoothstep and produced a
       // runaway bright spike at certain x positions
       float redProfile = fbm(vec2(p.x * 0.9, uTime * 0.01 + 40.0)) * 0.5 + 0.5;
-      float redBand = smoothstep(0.0, curtainTop * 0.5, h)
-        * (1.0 - smoothstep(curtainTop * 0.8, curtainTop * 1.3 + redProfile * 0.15, h));
+      float redBand = smoothstep(0.0, curtainTop * 0.5, hEnv)
+        * (1.0 - smoothstep(curtainTop * 0.8, curtainTop * 1.3 + redProfile * 0.15, hEnv));
       vec3 redColor = vec3(0.8, 0.05, 0.28);
 
       vec3 auroraColor = greenColor * green + redColor * redBand * 0.45;
