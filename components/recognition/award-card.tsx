@@ -6,27 +6,27 @@ import { formatDate } from "@/lib/utils";
 export function AwardCard({ award }: { award: Award }) {
   return (
     <div className="flex flex-col gap-2 border-b border-zinc-200 py-6 last:border-b-0 dark:border-zinc-800">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <h3 className="max-w-2xl text-lg font-medium leading-snug tracking-tight text-zinc-950 dark:text-zinc-50">
-          {award.title}
-        </h3>
-        <time
-          dateTime={award.date}
-          className="whitespace-nowrap font-mono text-xs text-zinc-600"
-        >
-          {formatDate(award.date)}
-        </time>
-      </div>
+      <h3 className="max-w-2xl text-lg font-medium leading-snug tracking-tight text-zinc-950 dark:text-zinc-50">
+        {award.title}
+      </h3>
 
-      <p className="font-mono text-xs uppercase tracking-widest text-zinc-600">
-        {award.issuer}
-        {award.association && (
+      <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-zinc-700 dark:text-zinc-300">
+        <time dateTime={award.date}>{formatDate(award.date)}</time>
+        {(award.issuer || award.association) && (
           <>
-            <span className="text-zinc-500 dark:text-zinc-500"> · </span>
-            {award.association}
+            <span className="text-zinc-500 dark:text-zinc-500">/</span>
+            <span>
+              {award.issuer}
+              {award.association && (
+                <>
+                  <span className="text-zinc-500 dark:text-zinc-500"> · </span>
+                  {award.association}
+                </>
+              )}
+            </span>
           </>
         )}
-      </p>
+      </div>
 
       {award.summary && (
         <p className="max-w-2xl text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">

@@ -1,21 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Script from "next/script";
-
-// Three.js is intentionally loaded from a CDN as a classic global script
-// (rather than the npm package) so the hero's WebGL scene ships as its own
-// cacheable, deferred bundle instead of growing the app's first-party JS.
-const THREE_CDN_URL = "https://unpkg.com/three@0.160.0/build/three.min.js";
-
-declare global {
-  interface Window {
-    // Loaded from the CDN as a plain global (see THREE_CDN_URL below), not
-    // the npm package, so we deliberately don't pull in `three`'s types
-    // here — that would require the package as a type-only dependency.
-    THREE?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  }
-}
+import type * as Three from "three";
 
 /**
  * "Aurora Borealis from Space" — a real-time WebGL shader scene layered
@@ -39,8 +25,24 @@ declare global {
 export function AuroraCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const threeRef = useRef<typeof Three | null>(null);
   const [threeReady, setThreeReady] = useState(false);
   const [useFallback, setUseFallback] = useState<boolean | null>(null);
+
+  // Use the same npm `three` as react-globe.gl — loading an older CDN build
+  // into `window.THREE` breaks three-render-objects' `new Timer()` on /world.
+  useEffect(() => {
+    if (useFallback !== false) return;
+    let cancelled = false;
+    import("three").then((THREE) => {
+      if (cancelled) return;
+      threeRef.current = THREE;
+      setThreeReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [useFallback]);
 
   // Decide once, up front, whether it's even worth attempting WebGL.
   useEffect(() => {
@@ -73,7 +75,7 @@ export function AuroraCanvas() {
     if (useFallback !== false || !threeReady) return;
     const container = containerRef.current;
     const canvas = canvasRef.current;
-    const THREE = window.THREE;
+    const THREE = threeRef.current;
     if (!container || !canvas || !THREE) return;
 
     // ---- device / quality tier ------------------------------------------
@@ -228,12 +230,6 @@ export function AuroraCanvas() {
       aria-hidden
       className="pointer-events-none absolute inset-0 hidden dark:block"
     >
-      <Script
-        id="three-js-cdn"
-        src={THREE_CDN_URL}
-        strategy="afterInteractive"
-        onReady={() => setThreeReady(true)}
-      />
       <canvas ref={canvasRef} className="h-full w-full" />
 
       {/*

@@ -8,7 +8,6 @@ export const categories: ProjectCategory[] = [
     description:
       "Serverless backends, IoT integrations, and internal tooling built during three years at T-Mobile.",
     pattern: "terminal",
-    index: "01",
   },
   {
     slug: "computational-physics",
@@ -17,7 +16,6 @@ export const categories: ProjectCategory[] = [
     description:
       "Rooted in physics.",
     pattern: "orbit",
-    index: "02",
   },
   {
     slug: "electrical-engineering",
@@ -26,7 +24,6 @@ export const categories: ProjectCategory[] = [
     description:
       "Hands-on circuits and hardware builds.",
     pattern: "circuit",
-    index: "03",
   },
 ];
 

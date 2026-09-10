@@ -9,7 +9,6 @@ export interface ProjectCategory {
   shortLabel: string;
   description: string;
   pattern: "circuit" | "orbit" | "terminal";
-  index: string; // e.g. "01"
 }
 
 export interface Project {

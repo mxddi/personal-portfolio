@@ -12,7 +12,10 @@ import {
   type TravelNotebook,
 } from "@/lib/data/travel-notebooks";
 
-const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
+const Globe = dynamic(
+  () => import("three").then(() => import("react-globe.gl")),
+  { ssr: false }
+);
 const NotebookViewer = dynamic(
   () => import("@/components/world/notebook-viewer").then((m) => m.NotebookViewer),
   { ssr: false }
