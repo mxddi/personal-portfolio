@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { travelGalleries, getTravelGalleryBySlug } from "@/lib/data/travel-galleries";
-import { withMediaVersions } from "@/lib/media-version";
+import { withMediaVersions, listTravelMedia } from "@/lib/media-version";
 import { GalleryGrid } from "@/components/world/gallery-grid";
 
 interface PageProps {
@@ -33,6 +33,11 @@ export default async function TravelGalleryPage({ params }: PageProps) {
   const gallery = getTravelGalleryBySlug(slug);
   if (!gallery) notFound();
 
+  const fromDisk = listTravelMedia(gallery.slug);
+  const images = withMediaVersions(
+    fromDisk.length > 0 ? fromDisk : gallery.images
+  );
+
   return (
     <div className="container-page py-16 sm:py-20">
       <Link
@@ -56,10 +61,7 @@ export default async function TravelGalleryPage({ params }: PageProps) {
         </h1>
       </div>
 
-      <GalleryGrid
-        images={withMediaVersions(gallery.images)}
-        location={gallery.location}
-      />
+      <GalleryGrid images={images} location={gallery.location} />
     </div>
   );
 }

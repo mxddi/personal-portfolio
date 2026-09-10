@@ -112,7 +112,16 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "paris-france",
     location: "Paris, France",
-    images: buildImages("paris-france", 9),
+    images: [
+      "/travel/paris-france/01.jpg",
+      "/travel/paris-france/02.jpg",
+      "/travel/paris-france/03.jpg",
+      "/travel/paris-france/04.mp4",
+      "/travel/paris-france/05.jpg",
+      "/travel/paris-france/06.jpg",
+      "/travel/paris-france/07.jpg",
+      "/travel/paris-france/08.jpg"
+    ],
   },
   {
     slug: "zagreb-croatia",

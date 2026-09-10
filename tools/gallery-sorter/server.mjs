@@ -166,8 +166,41 @@ function parsePartMime(headers) {
 function sniffKind(buf, filename, mime) {
   const ext = path.extname(filename || "").toLowerCase();
   const mimeL = (mime || "").toLowerCase();
+  const namedVideo =
+    VIDEO_EXT.has(ext) ||
+    mimeL.startsWith("video/") ||
+    mimeL.includes("quicktime");
+  const looksJpeg = buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8;
+  const looksFtyp =
+    buf.length >= 12 && buf.slice(4, 8).toString("ascii") === "ftyp";
 
-  if (buf.length >= 12 && buf.slice(4, 8).toString("ascii") === "ftyp") {
+  if (namedVideo) {
+    if (looksJpeg) {
+      return { kind: "video-still" };
+    }
+    if (looksFtyp) {
+      const brand = buf
+        .slice(8, 12)
+        .toString("ascii")
+        .replace(/\0/g, "")
+        .trim()
+        .toLowerCase();
+      if (HEIF_BRANDS.has(brand)) return { kind: "image", ext: ".heic" };
+      return {
+        kind: "video",
+        ext: ext === ".webm" ? ".webm" : ext === ".mov" ? ".mov" : ".mp4",
+      };
+    }
+    if (buf.length >= 4 && buf[0] === 0x1a && buf[1] === 0x45) {
+      return { kind: "video", ext: ".webm" };
+    }
+    return {
+      kind: "video",
+      ext: ext === ".webm" || mimeL.includes("webm") ? ".webm" : ext === ".mov" ? ".mov" : ".mp4",
+    };
+  }
+
+  if (looksFtyp) {
     const brand = buf
       .slice(8, 12)
       .toString("ascii")
@@ -177,7 +210,7 @@ function sniffKind(buf, filename, mime) {
     if (HEIF_BRANDS.has(brand)) return { kind: "image", ext: ".heic" };
     return { kind: "video", ext: ext === ".mov" ? ".mov" : ".mp4" };
   }
-  if (buf.length >= 3 && buf[0] === 0xff && buf[1] === 0xd8) {
+  if (looksJpeg) {
     return { kind: "image", ext: ".jpg" };
   }
   if (
@@ -294,6 +327,12 @@ function addUploads(slug, uploads) {
       skipped.push(`${label} (unsupported)`);
       continue;
     }
+    if (kind.kind === "video-still") {
+      skipped.push(
+        `${label} (Photos sent a still frame — drop the .mov/.mp4 from Finder)`
+      );
+      continue;
+    }
     const destBase = path.join(dir, String(n).padStart(2, "0"));
     if (kind.kind === "video") {
       writeVideo(file.buffer, kind.ext, destBase);
@@ -307,7 +346,19 @@ function addUploads(slug, uploads) {
       try {
         convertImage(tmp, dest);
         const { width, height } = imageSize(dest);
-        if (Math.max(width, height) < MIN_PHOTO_EDGE) {
+        const long = Math.max(width, height);
+        const short = Math.min(width, height);
+        const looksLikeVideoFrame =
+          (long === 3840 && short === 2160) ||
+          (long === 1920 && short === 1080);
+        if (looksLikeVideoFrame) {
+          fs.unlinkSync(dest);
+          skipped.push(
+            `${label} (looks like a video frame — drop the .mov/.mp4 from Finder)`
+          );
+          continue;
+        }
+        if (long < MIN_PHOTO_EDGE) {
           fs.unlinkSync(dest);
           skipped.push(`${label} (too small to use at full quality)`);
           continue;
