@@ -19,13 +19,16 @@ declare global {
 
 /**
  * "Aurora Borealis from Space" — a real-time WebGL shader scene layered
- * behind the hero, dark mode only. A single full-viewport plane, one
- * fragment shader, three concerns:
- *   1. deep-space background + twinkling starfield
- *   2. Earth's limb across the lower third, with atmospheric (Fresnel-style)
- *      scattering along the curve
- *   3. 3 layered aurora curtains above the limb, driven by fbm(simplex)
- *      noise in time, colored green -> violet
+ * behind the hero, dark mode only, modeled on real ISS aurora photography
+ * (bright filamentary green curtain hugging the limb, a soft diffuse red
+ * glow higher up, a thin bright atmospheric rim, and a dense starfield). A
+ * single full-viewport plane, one fragment shader, three concerns:
+ *   1. deep-space background + dense twinkling starfield
+ *   2. Earth's limb across the lower third, with a thin bright rim plus
+ *      broader atmospheric (Fresnel-style) scattering along the curve
+ *   3. a fine-grained, ray/finger-textured green aurora curtain hugging
+ *      the limb, fading into a softer, less structured red/crimson glow
+ *      higher up — driven by fbm(simplex) noise in time
  *
  * Perf strategy (see inline comments below for each):
  *   - capped device pixel ratio
@@ -261,9 +264,10 @@ export function AuroraCanvas() {
 
 /**
  * Static, dependency-free fallback for `prefers-reduced-motion: reduce`,
- * missing WebGL support, or low-core-count devices — same green-to-violet
- * palette and framing, but a plain CSS radial gradient instead of a
- * running shader, so there's zero animation and zero GPU cost.
+ * missing WebGL support, or low-core-count devices — same green-hugging-
+ * the-horizon-fading-to-red palette and framing, but a plain CSS radial
+ * gradient instead of a running shader, so there's zero animation and
+ * zero GPU cost.
  */
 function AuroraFallback() {
   return (
@@ -272,7 +276,7 @@ function AuroraFallback() {
       className="pointer-events-none absolute inset-0 hidden dark:block"
       style={{
         background:
-          "radial-gradient(ellipse 70% 55% at 65% 15%, rgba(0,255,136,0.16) 0%, rgba(138,43,226,0.12) 45%, transparent 75%), radial-gradient(ellipse 90% 40% at 50% 100%, rgba(56,189,248,0.14) 0%, transparent 70%)",
+          "radial-gradient(ellipse 90% 45% at 50% 78%, rgba(60,255,110,0.22) 0%, transparent 65%), radial-gradient(ellipse 85% 55% at 50% 45%, rgba(210,15,75,0.16) 0%, transparent 70%)",
       }}
     />
   );
@@ -363,61 +367,75 @@ function buildFragmentShader(highQuality: boolean) {
       // ---- deep space base ----
       vec3 col = vec3(0.008, 0.01, 0.018);
 
-      // ---- twinkling starfield ----
+      // ---- dense twinkling starfield ----
       vec2 starUv = uv * ${starDensity.toFixed(1)};
       vec2 starCell = floor(starUv);
       float starRand = hash(starCell);
-      if (starRand > 0.986) {
+      if (starRand > 0.978) {
         float twinkle = 0.6 + 0.4 * sin(uTime * (2.0 + starRand * 4.0) + starRand * 30.0);
         float d = length(fract(starUv) - 0.5);
-        col += vec3(0.9, 0.95, 1.0) * smoothstep(0.5, 0.0, d) * twinkle * 0.9;
+        col += vec3(0.9, 0.95, 1.0) * smoothstep(0.5, 0.0, d) * twinkle * 0.95;
       }
 
       // ---- Earth's limb across the lower third ----
       float earthR = 1.7;
-      vec2 earthCenter = vec2(0.0, -1.62);
-      float distToEarth = length(p - earthCenter) - earthR;
+      vec2 earthCenter = vec2(0.0, -1.75);
+      float distToEarth = length(p - earthCenter) - earthR; // > 0 above the surface
 
-      // atmospheric (Fresnel-style) limb scattering — cyan/blue glow
-      // hugging the curve of the planet
-      float limbGlow = smoothstep(0.24, 0.0, abs(distToEarth));
-      vec3 atmosphereColor = vec3(0.25, 0.65, 0.95);
-      col += atmosphereColor * limbGlow * 0.85;
+      // thin, bright atmospheric rim right at the horizon line — the
+      // blue/white glow seen edge-on from orbit
+      float limbRim = smoothstep(0.035, 0.0, abs(distToEarth));
+      col += vec3(0.65, 0.82, 1.0) * limbRim * 0.9;
+
+      // broader, softer cyan/blue atmospheric scattering a bit further out
+      float limbGlow = smoothstep(0.22, 0.0, abs(distToEarth));
+      col += vec3(0.15, 0.42, 0.7) * limbGlow * 0.3;
 
       // dark planet silhouette below the limb
       float planetMask = smoothstep(0.015, -0.02, distToEarth);
-      vec3 planetColor = vec3(0.012, 0.026, 0.045);
+      vec3 planetColor = vec3(0.01, 0.02, 0.035);
       col = mix(col, planetColor, planetMask);
 
       // faint scattered city-light speckle on the night side
       float cityNoise = hash(floor(uv * 380.0));
       col += vec3(1.0, 0.82, 0.5) * planetMask * step(0.997, cityNoise) * 0.55;
 
-      // ---- aurora curtains above the northern limb ----
-      float aurora = 0.0;
-      vec3 auroraColor = vec3(0.0);
-      for (int layer = 0; layer < 3; layer++) {
-        float lf = float(layer);
-        float yBase = 0.12 + lf * 0.13;
-        float speed = 0.05 + lf * 0.018;
-        float n = fbm(vec2(p.x * 1.25 + lf * 11.0, uTime * speed));
-        float band = 1.0 - smoothstep(0.0, 0.32, abs(p.y - (yBase + n * 0.28)));
-        float shimmer = fbm(vec2(p.x * 3.2, uTime * 0.16 + lf * 6.0));
-        band *= 0.5 + 0.5 * shimmer;
+      // ---- aurora: bright filamentary green curtain hugging the limb,
+      // fading into a softer red/crimson glow higher up — the two-color
+      // structure seen in real ISS aurora photography ----
+      float h = max(distToEarth, 0.0); // height above the horizon, 0 at the limb
 
-        // Real aurora curtains run green near the horizon (~100km, oxygen
-        // emission) fading into violet higher up (~200km+) — map that
-        // straight onto screen-space height so it reads consistently
-        // across all three curtain layers, rather than per-layer.
-        vec3 green = vec3(0.0, 1.0, 0.53);   // #00ff88
-        vec3 violet = vec3(0.54, 0.17, 0.89); // #8a2be2
-        float heightT = clamp((p.y + 0.05) / 0.5, 0.0, 1.0);
-        vec3 layerColor = mix(green, violet, heightT);
+      // low-frequency "height field" — how far up the green curtain
+      // reaches at each position along the limb, drifting slowly over time
+      float curtainProfile = fbm(vec2(p.x * 1.6, uTime * 0.05));
+      float curtainTop = 0.15 + curtainProfile * 0.09;
 
-        aurora += band * (0.55 - lf * 0.1);
-        auroraColor += layerColor * band;
-      }
-      col += auroraColor * aurora * (1.0 - planetMask);
+      // fine vertical ray striations ("fingers" of light), gently warped
+      // so they drift and curl rather than sitting static
+      float rayWarp = sin(h * 3.0 + uTime * 0.2) * 0.3
+        + fbm(vec2(p.x * 1.1, uTime * 0.04)) * 2.0;
+      float rays = fbm(vec2(p.x * ${(highQuality ? 26.0 : 13.0).toFixed(
+        1
+      )} + rayWarp, uTime * 0.15));
+      rays = smoothstep(-0.1, 0.55, rays);
+
+      // green: brightest right at the limb, tapering out toward
+      // curtainTop, textured by the ray striations
+      float greenFalloff = 1.0 - smoothstep(0.0, curtainTop, h);
+      float green = greenFalloff * mix(0.3, 1.0, rays);
+      vec3 greenColor = vec3(0.32, 1.0, 0.28);
+
+      // red/crimson: sits above the green, soft and diffuse (no fine
+      // rays) — the classic high-altitude oxygen emission line. Kept
+      // fairly compact so it fades to black well before the top of the
+      // frame, rather than washing out the whole sky.
+      float redProfile = fbm(vec2(p.x * 0.9, uTime * 0.025 + 40.0));
+      float redBand = smoothstep(0.0, curtainTop * 0.5, h)
+        * (1.0 - smoothstep(curtainTop * 0.8, curtainTop * 1.6 + redProfile * 0.2, h));
+      vec3 redColor = vec3(0.8, 0.05, 0.28);
+
+      vec3 auroraColor = greenColor * green + redColor * redBand * 0.45;
+      col += auroraColor * (1.0 - planetMask);
 
       // gentle vignette so the frame edges recede into the dark
       float vig = smoothstep(1.15, 0.2, length(p));
