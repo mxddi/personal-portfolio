@@ -408,8 +408,12 @@ function buildFragmentShader(highQuality: boolean) {
       float h = max(distToEarth, 0.0); // height above the horizon, 0 at the limb
 
       // low-frequency "height field" — how far up the green curtain
-      // reaches at each position along the limb, drifting slowly over time
-      float curtainProfile = fbm(vec2(p.x * 1.6, uTime * 0.02));
+      // reaches at each position along the limb. Fixed in time (no uTime
+      // term) so the curtain's overall shape/height holds still — only
+      // the fine ray texture below animates, not this envelope — otherwise
+      // the whole aurora appears to slowly rise and fall as uTime scans
+      // through the noise field.
+      float curtainProfile = fbm(vec2(p.x * 1.6, 0.0));
       float curtainTop = 0.10 + curtainProfile * 0.05;
 
       // compresses the whole aurora envelope (green + red band thresholds
@@ -441,8 +445,10 @@ function buildFragmentShader(highQuality: boolean) {
       // remapped to [0,1] so it only ever *adds* to the fade-out edge —
       // letting it go negative could push that edge below the fade-in
       // edge below, which is undefined for smoothstep and produced a
-      // runaway bright spike at certain x positions
-      float redProfile = fbm(vec2(p.x * 0.9, uTime * 0.01 + 40.0)) * 0.5 + 0.5;
+      // runaway bright spike at certain x positions. Also fixed in time
+      // (no uTime term), same reason as curtainProfile above — the top
+      // of the red haze should hold still rather than drift.
+      float redProfile = fbm(vec2(p.x * 0.9, 40.0)) * 0.5 + 0.5;
       float redBand = smoothstep(0.0, curtainTop * 0.5, hEnv)
         * (1.0 - smoothstep(curtainTop * 0.8, curtainTop * 1.3 + redProfile * 0.15, hEnv));
       vec3 redColor = vec3(0.8, 0.05, 0.28);
