@@ -15,7 +15,7 @@ export function Pillars() {
         <SectionHeading
           eyebrow="Core Skills"
           // title="Three disciplines, one vision"
-          title="Three disciplines:"
+          title="Focus areas:"
           //description="Every project I take on draws from at least one of these domains, sometimes all three."
         />
 
