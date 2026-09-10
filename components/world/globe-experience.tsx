@@ -6,6 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import Papa from "papaparse";
 import { Eye, X } from "lucide-react";
+import {
+  AmbientLight,
+  BackSide,
+  Color,
+  DirectionalLight,
+  Mesh,
+  MeshPhongMaterial,
+} from "three";
 import type { GlobeMethods } from "react-globe.gl";
 import {
   getNotebooksForLocation,
@@ -32,6 +40,106 @@ interface LocationPoint {
 
 const ACCENT = "#5eead4";
 const ACCENT_DIM = "#2dd4bf";
+const GLOBE_ATMOSPHERE = "#5ad2d6";
+
+function drawLandOceanTint(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  landMask: CanvasImageSource
+) {
+  const mask = document.createElement("canvas");
+  const mw =
+    "width" in landMask ? Number(landMask.width) : 2048;
+  const mh =
+    "height" in landMask ? Number(landMask.height) : 1024;
+  mask.width = mw;
+  mask.height = mh;
+  const mctx = mask.getContext("2d");
+  if (!mctx) return;
+  mctx.drawImage(landMask, 0, 0);
+  const src = mctx.getImageData(0, 0, mw, mh);
+  const land = mctx.createImageData(mw, mh);
+  const ocean = mctx.createImageData(mw, mh);
+
+  for (let i = 0; i < src.data.length; i += 4) {
+    if (src.data[i] < 30) {
+      ocean.data[i] = 40;
+      ocean.data[i + 1] = 52;
+      ocean.data[i + 2] = 68;
+      ocean.data[i + 3] = 255;
+    } else {
+      land.data[i] = 10;
+      land.data[i + 1] = 26;
+      land.data[i + 2] = 54;
+      land.data[i + 3] = 255;
+    }
+  }
+
+  const landLayer = document.createElement("canvas");
+  landLayer.width = mw;
+  landLayer.height = mh;
+  const landCtx = landLayer.getContext("2d");
+  const oceanLayer = document.createElement("canvas");
+  oceanLayer.width = mw;
+  oceanLayer.height = mh;
+  const oceanCtx = oceanLayer.getContext("2d");
+  if (!landCtx || !oceanCtx) return;
+  landCtx.putImageData(land, 0, 0);
+  oceanCtx.putImageData(ocean, 0, 0);
+
+  ctx.globalCompositeOperation = "soft-light";
+  ctx.globalAlpha = 0.42;
+  ctx.drawImage(landLayer, 0, 0, width, height);
+  ctx.globalCompositeOperation = "screen";
+  ctx.globalAlpha = 0.14;
+  ctx.drawImage(oceanLayer, 0, 0, width, height);
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = "source-over";
+}
+
+function neutralizeNightMap(
+  map: {
+    image: CanvasImageSource;
+    needsUpdate: boolean;
+  },
+  landMask?: CanvasImageSource | null
+) {
+  const already =
+    map.image instanceof HTMLCanvasElement &&
+    map.image.dataset.nightProcessed === "1";
+  const src = map.image;
+  const width = "width" in src ? Number(src.width) : 0;
+  const height = "height" in src ? Number(src.height) : 0;
+  if (!width || !height) return;
+
+  const canvas = already
+    ? (src as HTMLCanvasElement)
+    : document.createElement("canvas");
+  if (!already) {
+    canvas.width = width;
+    canvas.height = height;
+  }
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  if (!already) {
+    // The 8K night map's dark land is magenta. Hue-shift toward cyan and
+    // crush saturation so continents read as a flat blue-gray.
+    ctx.filter = "hue-rotate(-48deg) saturate(32%) brightness(1.22)";
+    ctx.drawImage(src, 0, 0);
+    ctx.filter = "none";
+    canvas.dataset.nightProcessed = "1";
+    map.image = canvas;
+  }
+
+  if (landMask && canvas.dataset.oceanTinted !== "1") {
+    drawLandOceanTint(ctx, width, height, landMask);
+    canvas.dataset.oceanTinted = "1";
+  }
+
+  map.needsUpdate = true;
+}
 
 export function GlobeExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -143,23 +251,86 @@ export function GlobeExperience() {
           width={dimensions.width}
           height={dimensions.height}
           backgroundColor="rgba(0,0,0,0)"
-          globeImageUrl="https://unpkg.com/three-globe/example/img/earth-night.jpg"
+          globeImageUrl="https://clouds.matteason.co.uk/images/8192x4096/earth-night.jpg"
           bumpImageUrl="https://unpkg.com/three-globe/example/img/earth-topology.png"
           backgroundImageUrl="https://unpkg.com/three-globe/example/img/night-sky.png"
+          globeCurvatureResolution={2}
           showAtmosphere
-          atmosphereColor={ACCENT}
-          atmosphereAltitude={0.22}
+          atmosphereColor={GLOBE_ATMOSPHERE}
+          atmosphereAltitude={0.21}
           onGlobeReady={() => {
             setGlobeReady(true);
+            const globe = globeRef.current;
+            if (!globe) return;
+
             // Render at a higher internal resolution than the display's
             // native pixel ratio (the library clamps to 2x by default) so
             // points that sit close together stay crisp and distinguishable
             // instead of anti-aliasing into a single blurry blob.
-            globeRef.current
-              ?.renderer()
-              .setPixelRatio(
-                Math.min(Math.max(window.devicePixelRatio, 2) * 1.5, 3)
-              );
+            const renderer = globe.renderer();
+            renderer.setPixelRatio(
+              Math.min(Math.max(window.devicePixelRatio, 2) * 1.5, 3)
+            );
+            renderer.toneMappingExposure = 1.12;
+
+            const scene = globe.scene();
+            const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+            // Flatten saturation and cancel the texture's magenta by
+            // boosting green relative to red in the fill light.
+            scene.traverse((obj) => {
+              if (obj instanceof AmbientLight) {
+                obj.color.setHex(0x96a8a8);
+                obj.intensity = Math.PI * 1.45;
+              }
+              if (obj instanceof DirectionalLight) {
+                obj.color.setHex(0xe8ece8);
+                obj.intensity = 0.4 * Math.PI;
+              }
+            });
+
+            // Anisotropic filtering keeps continent edges from smearing
+            // when the camera is zoomed in at a glancing angle.
+            scene.traverse((obj) => {
+              if (!(obj instanceof Mesh)) return;
+              const material = obj.material;
+              if (!(material instanceof MeshPhongMaterial) || !material.map) {
+                return;
+              }
+              if (material.side === BackSide) return;
+
+              const landMask =
+                material.bumpMap?.image &&
+                "width" in material.bumpMap.image &&
+                Number(material.bumpMap.image.width) > 0
+                  ? (material.bumpMap.image as CanvasImageSource)
+                  : null;
+              neutralizeNightMap(material.map, landMask);
+              if (!landMask) {
+                const topology = new Image();
+                topology.crossOrigin = "anonymous";
+                topology.onload = () => {
+                  neutralizeNightMap(material.map, topology);
+                  material.needsUpdate = true;
+                };
+                topology.src =
+                  "https://unpkg.com/three-globe/example/img/earth-topology.png";
+              }
+              material.map.anisotropy = maxAniso;
+              material.map.needsUpdate = true;
+              if (material.bumpMap) {
+                material.bumpMap.anisotropy = maxAniso;
+                material.bumpMap.needsUpdate = true;
+              }
+
+              material.emissiveMap = material.map;
+              material.emissive = new Color(0xfff2dc);
+              material.emissiveIntensity = 0.48;
+              material.color = new Color(0xc4ccc8);
+              material.shininess = 2;
+              material.specular = new Color(0x111111);
+              material.needsUpdate = true;
+            });
           }}
           pointsData={locations}
           pointLat="lat"
@@ -191,8 +362,8 @@ export function GlobeExperience() {
       )}
 
       {!locations && !loadError && (
-        <div className="absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-widest text-zinc-300">
-          Loading globe…
+        <div className="absolute inset-0 flex items-center justify-center font-mono text-xs tracking-widest text-zinc-300">
+          booting systems...
         </div>
       )}
 

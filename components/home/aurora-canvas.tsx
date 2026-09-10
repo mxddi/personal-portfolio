@@ -140,8 +140,15 @@ export function AuroraCanvas() {
 
     function updateMouseFromClient(clientX: number, clientY: number) {
       const rect = container!.getBoundingClientRect();
-      mouseTarget.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-      mouseTarget.y = -(((clientY - rect.top) / rect.height) * 2 - 1);
+      const nx = ((clientX - rect.left) / rect.width) * 2 - 1;
+      const ny = -(((clientY - rect.top) / rect.height) * 2 - 1);
+      // Clamp so the cursor outside the hero (e.g. the page footer)
+      // can't yank the aurora out of its resting frame.
+      mouseTarget.x = Math.max(-1, Math.min(1, nx));
+      // Bottom of the page is ny < 0 — keep that lift much smaller than
+      // the sideways / upward parallax so the curtain stays under the stats.
+      const clampedY = Math.max(-1, Math.min(1, ny));
+      mouseTarget.y = clampedY < 0 ? clampedY * 0.22 : clampedY * 0.55;
     }
     const onMouseMove = (e: MouseEvent) =>
       updateMouseFromClient(e.clientX, e.clientY);
@@ -165,6 +172,7 @@ export function AuroraCanvas() {
       geometry.dispose();
       geometry = new THREE.PlaneGeometry(size.width * 1.3, size.height * 1.3);
       mesh.geometry = geometry;
+      mesh.position.y = 0;
     }
     const resizeObserver = new ResizeObserver(handleResize);
     resizeObserver.observe(container);
@@ -195,7 +203,7 @@ export function AuroraCanvas() {
       mouseCurrent.x += (mouseTarget.x - mouseCurrent.x) * 0.04;
       mouseCurrent.y += (mouseTarget.y - mouseCurrent.y) * 0.04;
       camera.position.x = mouseCurrent.x * 0.3;
-      camera.position.y = mouseCurrent.y * 0.2 + 0.1;
+      camera.position.y = mouseCurrent.y * 0.08 + 0.1;
       camera.lookAt(0, 0.1, 0);
       uniforms.uMouse.value.set(mouseCurrent.x, mouseCurrent.y);
       uniforms.uTime.value = (now - clockStart) / 1000;
@@ -272,7 +280,7 @@ function AuroraFallback() {
       className="pointer-events-none absolute inset-0 hidden dark:block"
       style={{
         background:
-          "radial-gradient(ellipse 90% 45% at 50% 78%, rgba(60,255,110,0.22) 0%, transparent 65%), radial-gradient(ellipse 85% 55% at 50% 45%, rgba(210,15,75,0.16) 0%, transparent 70%)",
+          "radial-gradient(ellipse 95% 18% at 50% 86%, rgba(180,220,255,0.18) 0%, transparent 55%), radial-gradient(ellipse 92% 28% at 50% 80%, rgba(80,230,110,0.22) 0%, transparent 60%), radial-gradient(ellipse 80% 42% at 50% 62%, rgba(180,30,90,0.16) 0%, transparent 70%), linear-gradient(to bottom, transparent 84%, rgb(9 9 11) 100%)",
       }}
     />
   );
@@ -358,7 +366,7 @@ function buildFragmentShader(highQuality: boolean) {
       vec2 p = (uv - 0.5) * vec2(uResolution.x / max(uResolution.y, 1.0), 1.0);
 
       // subtle parallax offset, driven by the damped mouse position
-      p += uMouse * 0.03;
+      p += vec2(uMouse.x * 0.03, uMouse.y * 0.012);
 
       // ---- deep space base ----
       vec3 col = vec3(0.008, 0.01, 0.018);
@@ -377,84 +385,84 @@ function buildFragmentShader(highQuality: boolean) {
         col += vec3(0.9, 0.95, 1.0) * smoothstep(starSize, 0.0, d) * brightness * 0.95;
       }
 
-      // ---- Earth's limb, pushed further down so the aurora's colorful
-      // tip stays low in the frame and the upper portion (behind the
-      // hero heading/bio) is plain starfield ----
+      // ---- Earth's limb — aurora sits under the stats row ----
       float earthR = 1.7;
-      vec2 earthCenter = vec2(0.0, -2.05);
+      vec2 earthCenter = vec2(0.0, -2.02);
       float distToEarth = length(p - earthCenter) - earthR; // > 0 above the surface
 
-      // thin, bright atmospheric rim right at the horizon line — the
-      // blue/white glow seen edge-on from orbit
-      float limbRim = smoothstep(0.035, 0.0, abs(distToEarth));
-      col += vec3(0.65, 0.82, 1.0) * limbRim * 0.9;
+      // thin, bright atmospheric rim — the electric blue-white edge seen
+      // from orbit, kept mostly even so it reads as atmosphere, not aurora
+      float limbRim = smoothstep(0.028, 0.0, abs(distToEarth));
+      col += vec3(0.78, 0.9, 1.0) * limbRim * 0.72;
 
-      // broader, softer cyan/blue atmospheric scattering a bit further out
-      float limbGlow = smoothstep(0.22, 0.0, abs(distToEarth));
-      col += vec3(0.15, 0.42, 0.7) * limbGlow * 0.3;
+      // broader, softer blue scatter just outside the rim
+      float limbGlow = smoothstep(0.18, 0.0, abs(distToEarth));
+      col += vec3(0.28, 0.48, 0.85) * limbGlow * 0.16;
 
       // dark planet silhouette below the limb
-      float planetMask = smoothstep(0.015, -0.02, distToEarth);
+      float planetMask = smoothstep(0.04, -0.12, distToEarth);
       vec3 planetColor = vec3(0.01, 0.02, 0.035);
       col = mix(col, planetColor, planetMask);
 
-      // ---- aurora: bright filamentary green curtain hugging the limb,
-      // fading into a softer red/crimson glow higher up — the two-color
-      // structure seen in real ISS aurora photography ----
-      float h = max(distToEarth, 0.0); // height above the horizon, 0 at the limb
+      // ---- aurora, modeled on ISS photography: a continuous green
+      // ribbon hugging the atmosphere, with a few vertical pillars and a
+      // soft magenta-to-red haze fading into space above it ----
+      float h = max(distToEarth, -0.04);
 
-      // low-frequency "height field" — how far up the green curtain
-      // reaches at each position along the limb. Fixed in time (no uTime
-      // term) so the curtain's overall shape/height holds still — only
-      // the fine ray texture below animates, not this envelope — otherwise
-      // the whole aurora appears to slowly rise and fall as uTime scans
-      // through the noise field.
-      float curtainProfile = fbm(vec2(p.x * 1.6, 0.0));
-      float curtainTop = 0.10 + curtainProfile * 0.05;
+      // height of the green ribbon along the limb — mostly even, with
+      // occasional taller pillars (as in the reference photo)
+      float curtainProfile = fbm(vec2(p.x * 1.15, 0.0));
+      float pillar = smoothstep(0.35, 0.72, fbm(vec2(p.x * 2.4, 12.0)));
+      float curtainTop = 0.11 + curtainProfile * 0.035 + pillar * 0.06;
 
-      // compresses the whole aurora envelope (green + red band thresholds
-      // below) toward the horizon, independent of curtainTop's own
-      // definition — used to keep the entire glow, including its faint
-      // upper red haze, well clear of the hero copy above it
-      float hEnv = h * 3.4;
+      float hEnv = h * 2.95;
 
-      // fine vertical ray striations ("fingers" of light), gently warped
-      // so they drift and curl rather than sitting static — slow, lazy
-      // motion rather than an active flicker
-      float rayWarp = sin(h * 3.0 + uTime * 0.08) * 0.3
-        + fbm(vec2(p.x * 1.1, uTime * 0.016)) * 2.0;
-      float rays = fbm(vec2(p.x * ${(highQuality ? 26.0 : 13.0).toFixed(
+      // subtle vertical texture — enough to break a flat stripe, not so
+      // much that the ribbon falls apart into neon streaks
+      float rayWarp = sin(h * 2.4 + uTime * 0.07) * 0.22
+        + fbm(vec2(p.x * 0.9, uTime * 0.014)) * 1.4;
+      float rays = fbm(vec2(p.x * ${(highQuality ? 18.0 : 10.0).toFixed(
         1
-      )} + rayWarp, uTime * 0.06));
-      rays = smoothstep(-0.1, 0.55, rays);
+      )} + rayWarp, uTime * 0.05));
+      rays = smoothstep(-0.25, 0.5, rays);
 
-      // green: brightest right at the limb, tapering out toward
-      // curtainTop, textured by the ray striations
-      float greenFalloff = 1.0 - smoothstep(0.0, curtainTop, hEnv);
-      float green = greenFalloff * mix(0.3, 1.0, rays);
-      vec3 greenColor = vec3(0.32, 1.0, 0.28);
+      // green ribbon: classic ISS aurora green, brightest at the limb
+      float greenFalloff = 1.0 - smoothstep(-0.02, curtainTop, hEnv);
+      float green = greenFalloff * mix(0.48, 0.82, rays);
+      vec3 greenColor = vec3(0.38, 0.95, 0.42);
 
-      // red/crimson: sits above the green, soft and diffuse (no fine
-      // rays) — the classic high-altitude oxygen emission line. Kept
-      // fairly compact so it fades to black well before the top of the
-      // frame, rather than washing out the whole sky.
-      // remapped to [0,1] so it only ever *adds* to the fade-out edge —
-      // letting it go negative could push that edge below the fade-in
-      // edge below, which is undefined for smoothstep and produced a
-      // runaway bright spike at certain x positions. Also fixed in time
-      // (no uTime term), same reason as curtainProfile above — the top
-      // of the red haze should hold still rather than drift.
-      float redProfile = fbm(vec2(p.x * 0.9, 40.0)) * 0.5 + 0.5;
-      float redBand = smoothstep(0.0, curtainTop * 0.5, hEnv)
-        * (1.0 - smoothstep(curtainTop * 0.8, curtainTop * 1.3 + redProfile * 0.15, hEnv));
-      vec3 redColor = vec3(0.8, 0.05, 0.28);
+      // magenta / pink sitting just above the green — the mid-altitude
+      // glow in the reference, stronger where pillars punch upward
+      float pinkBand = smoothstep(curtainTop * 0.15, curtainTop * 0.55, hEnv)
+        * (1.0 - smoothstep(curtainTop * 0.7, curtainTop * 1.45 + pillar * 0.2, hEnv));
+      vec3 pinkColor = vec3(0.85, 0.22, 0.62);
 
-      vec3 auroraColor = greenColor * green + redColor * redBand * 0.45;
-      col += auroraColor * (1.0 - planetMask);
+      // high, diffuse red/crimson fading into space
+      float redProfile = fbm(vec2(p.x * 0.7, 40.0)) * 0.5 + 0.5;
+      float redBand = smoothstep(curtainTop * 0.35, curtainTop * 0.85, hEnv)
+        * (1.0 - smoothstep(curtainTop * 1.1, curtainTop * 1.85 + redProfile * 0.2, hEnv));
+      vec3 redColor = vec3(0.72, 0.04, 0.22);
+
+      vec3 auroraColor = greenColor * green
+        + pinkColor * pinkBand * (0.32 + pillar * 0.2)
+        + redColor * redBand * 0.42;
+
+      // fade toward the heading above, and cap height so the top of the
+      // glow sits below the Degree / Upcoming / Focus row (uv.y → 0 bottom)
+      float auroraTopFade = 1.0 - smoothstep(0.48, 0.82, uv.y);
+      float auroraCeiling = 1.0 - smoothstep(0.13, 0.24, uv.y);
+      float auroraScreen = auroraTopFade * auroraCeiling;
+      float auroraLimb = smoothstep(-0.16, 0.05, distToEarth);
+      col += auroraColor * auroraLimb * auroraScreen;
 
       // gentle vignette so the frame edges recede into the dark
       float vig = smoothstep(1.15, 0.2, length(p));
       col *= mix(0.6, 1.0, vig);
+
+      // narrow bottom trail into the page background — soft edge only
+      vec3 bgColor = vec3(0.008, 0.01, 0.018);
+      float bottomTrail = smoothstep(0.0, 0.11, uv.y);
+      col = mix(bgColor, col, bottomTrail);
 
       gl_FragColor = vec4(col, 1.0);
     }
