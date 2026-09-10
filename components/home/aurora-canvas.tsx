@@ -402,10 +402,6 @@ function buildFragmentShader(highQuality: boolean) {
       vec3 planetColor = vec3(0.01, 0.02, 0.035);
       col = mix(col, planetColor, planetMask);
 
-      // faint scattered city-light speckle on the night side
-      float cityNoise = hash(floor(uv * 380.0));
-      col += vec3(1.0, 0.82, 0.5) * planetMask * step(0.997, cityNoise) * 0.55;
-
       // ---- aurora: bright filamentary green curtain hugging the limb,
       // fading into a softer red/crimson glow higher up — the two-color
       // structure seen in real ISS aurora photography ----
