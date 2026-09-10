@@ -367,19 +367,22 @@ function buildFragmentShader(highQuality: boolean) {
       // ---- deep space base ----
       vec3 col = vec3(0.008, 0.01, 0.018);
 
-      // ---- dense twinkling starfield ----
+      // ---- dense, static starfield (no twinkle — brightness is fixed
+      // per star, just a per-cell random variation, not time-driven) ----
       vec2 starUv = uv * ${starDensity.toFixed(1)};
       vec2 starCell = floor(starUv);
       float starRand = hash(starCell);
       if (starRand > 0.978) {
-        float twinkle = 0.6 + 0.4 * sin(uTime * (2.0 + starRand * 4.0) + starRand * 30.0);
+        float brightness = 0.55 + 0.45 * fract(starRand * 17.0);
         float d = length(fract(starUv) - 0.5);
-        col += vec3(0.9, 0.95, 1.0) * smoothstep(0.5, 0.0, d) * twinkle * 0.95;
+        col += vec3(0.9, 0.95, 1.0) * smoothstep(0.5, 0.0, d) * brightness * 0.95;
       }
 
-      // ---- Earth's limb across the lower third ----
+      // ---- Earth's limb, pushed further down so the aurora's colorful
+      // tip stays low in the frame and the upper portion (behind the
+      // hero heading/bio) is plain starfield ----
       float earthR = 1.7;
-      vec2 earthCenter = vec2(0.0, -1.75);
+      vec2 earthCenter = vec2(0.0, -2.02);
       float distToEarth = length(p - earthCenter) - earthR; // > 0 above the surface
 
       // thin, bright atmospheric rim right at the horizon line — the
@@ -407,16 +410,17 @@ function buildFragmentShader(highQuality: boolean) {
 
       // low-frequency "height field" — how far up the green curtain
       // reaches at each position along the limb, drifting slowly over time
-      float curtainProfile = fbm(vec2(p.x * 1.6, uTime * 0.05));
-      float curtainTop = 0.15 + curtainProfile * 0.09;
+      float curtainProfile = fbm(vec2(p.x * 1.6, uTime * 0.02));
+      float curtainTop = 0.10 + curtainProfile * 0.05;
 
       // fine vertical ray striations ("fingers" of light), gently warped
-      // so they drift and curl rather than sitting static
-      float rayWarp = sin(h * 3.0 + uTime * 0.2) * 0.3
-        + fbm(vec2(p.x * 1.1, uTime * 0.04)) * 2.0;
+      // so they drift and curl rather than sitting static — slow, lazy
+      // motion rather than an active flicker
+      float rayWarp = sin(h * 3.0 + uTime * 0.08) * 0.3
+        + fbm(vec2(p.x * 1.1, uTime * 0.016)) * 2.0;
       float rays = fbm(vec2(p.x * ${(highQuality ? 26.0 : 13.0).toFixed(
         1
-      )} + rayWarp, uTime * 0.15));
+      )} + rayWarp, uTime * 0.06));
       rays = smoothstep(-0.1, 0.55, rays);
 
       // green: brightest right at the limb, tapering out toward
@@ -429,9 +433,13 @@ function buildFragmentShader(highQuality: boolean) {
       // rays) — the classic high-altitude oxygen emission line. Kept
       // fairly compact so it fades to black well before the top of the
       // frame, rather than washing out the whole sky.
-      float redProfile = fbm(vec2(p.x * 0.9, uTime * 0.025 + 40.0));
+      // remapped to [0,1] so it only ever *adds* to the fade-out edge —
+      // letting it go negative could push that edge below the fade-in
+      // edge below, which is undefined for smoothstep and produced a
+      // runaway bright spike at certain x positions
+      float redProfile = fbm(vec2(p.x * 0.9, uTime * 0.01 + 40.0)) * 0.5 + 0.5;
       float redBand = smoothstep(0.0, curtainTop * 0.5, h)
-        * (1.0 - smoothstep(curtainTop * 0.8, curtainTop * 1.6 + redProfile * 0.2, h));
+        * (1.0 - smoothstep(curtainTop * 0.8, curtainTop * 1.3 + redProfile * 0.15, h));
       vec3 redColor = vec3(0.8, 0.05, 0.28);
 
       vec3 auroraColor = greenColor * green + redColor * redBand * 0.45;

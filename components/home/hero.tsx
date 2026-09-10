@@ -5,7 +5,7 @@ import { AuroraCanvas } from "@/components/home/aurora-canvas";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-zinc-200 dark:border-zinc-800">
+    <section className="relative overflow-hidden">
       <AuroraCanvas />
       {/* Grid backdrop only shows in light mode — dark mode gets the
           aurora scene above instead. */}
@@ -18,7 +18,7 @@ export function Hero() {
               itself, so it doesn't eat into the grid's own width (which
               would squeeze the heading into the photo on narrow mobile
               screens). It just floats a few pixels outside the content. */}
-          <div className="pointer-events-none absolute -inset-4 hidden rounded-2xl border border-white/10 bg-zinc-950/35 shadow-2xl shadow-black/40 backdrop-blur-xl dark:block sm:-inset-6 sm:rounded-3xl md:-inset-8" />
+          <div className="pointer-events-none absolute -inset-4 hidden rounded-2xl bg-zinc-950/35 shadow-2xl shadow-black/40 backdrop-blur-xl dark:block sm:-inset-6 sm:rounded-3xl md:-inset-8" />
 
           <div className="hero-grid relative">
             <h1
