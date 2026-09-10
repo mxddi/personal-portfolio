@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import Image from "next/image";
 import { User } from "lucide-react";
+import { ProtectedProfileImage } from "@/components/home/protected-profile-image";
 
 const CANDIDATES = ["profile.jpg", "profile.jpeg", "profile.png", "profile.webp"];
 
@@ -25,16 +25,7 @@ export function ProfilePhoto() {
     <div className="relative w-36 min-[375px]:w-44 sm:w-44 md:w-52 lg:w-64 xl:w-72">
       <div className="overflow-hidden rounded-sm bg-zinc-50 dark:bg-zinc-900">
         {src ? (
-          <Image
-            src={src}
-            alt="Portrait of Madaly G"
-            width={900}
-            height={1200}
-            quality={100}
-            unoptimized
-            className="h-auto w-full"
-            priority
-          />
+          <ProtectedProfileImage src={src} />
         ) : (
           <div className="flex aspect-[3/4] w-full flex-col items-center justify-center gap-2 text-zinc-600 dark:text-zinc-400">
             <User className="h-5 w-5 sm:h-8 sm:w-8" strokeWidth={1.25} />
