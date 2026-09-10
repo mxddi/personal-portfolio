@@ -20,7 +20,8 @@ import type * as Three from "three";
  *   - capped device pixel ratio
  *   - fewer noise octaves / lower star density / lower target FPS on mobile
  *   - IntersectionObserver pauses the rAF loop when scrolled out of view
- *   - reduced-motion or missing WebGL skip the scene entirely
+ *     (desktop only — iOS IO is unreliable on absolutely positioned layers)
+ *   - missing WebGL skips the scene entirely
  */
 export function AuroraCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -46,23 +47,28 @@ export function AuroraCanvas() {
 
   // Decide once, up front, whether it's even worth attempting WebGL.
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
     const hasWebGL = (() => {
       try {
-        const c = document.createElement("canvas");
-        return !!(c.getContext("webgl2") || c.getContext("webgl"));
+        const probe = (id: string) => {
+          const c = document.createElement("canvas");
+          const gl = c.getContext(id, { failIfMajorPerformanceCaveat: false });
+          if (gl && "getExtension" in gl) {
+            gl.getExtension("WEBGL_lose_context")?.loseContext();
+          }
+          return !!gl;
+        };
+        // Probe on separate canvases — Safari will not allow a second
+        // context type on the same canvas after a failed webgl2 request.
+        return probe("webgl") || probe("experimental-webgl") || probe("webgl2");
       } catch {
         return false;
       }
     })();
 
-    // Do not key off hardwareConcurrency — iOS Safari often reports `2`
-    // for every iPhone as an anti-fingerprinting measure, which would
-    // incorrectly skip the live shader.
-    setUseFallback(prefersReducedMotion || !hasWebGL);
+    // iOS "Reduce Motion" is commonly on and was hiding the aurora
+    // entirely. This scene is decorative and already capped on mobile,
+    // so we only skip when WebGL itself is unavailable.
+    setUseFallback(!hasWebGL);
   }, []);
 
   useEffect(() => {
@@ -88,18 +94,27 @@ export function AuroraCanvas() {
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
-      alpha: true,
+      // Opaque canvas — iOS Safari often composites an alpha WebGL
+      // canvas as a blank/grey hole.
+      alpha: false,
       antialias: false,
       depth: false,
       stencil: false,
       powerPreference: isMobile ? "default" : "high-performance",
       failIfMajorPerformanceCaveat: false,
+      premultipliedAlpha: true,
+      preserveDrawingBuffer: false,
     });
-    renderer.setClearColor(0x000000, 0);
+    renderer.setClearColor(0x09090b, 1);
     // Adaptive DPR cap — stops a 3x-DPR phone from rendering at full
     // Retina resolution and overloading its GPU/thermal budget.
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.5));
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.5)
+    );
+    renderer.setSize(
+      Math.max(container.clientWidth, 1),
+      Math.max(container.clientHeight, 1)
+    );
 
     const uniforms = {
       uTime: { value: 0 },
@@ -176,17 +191,22 @@ export function AuroraCanvas() {
     const resizeObserver = new ResizeObserver(handleResize);
     resizeObserver.observe(container);
 
-    // ---- offscreen pause: stop rendering entirely once scrolled away ----
+    // iOS IntersectionObserver is flaky on `position: absolute` layers and
+    // can report "not intersecting" forever, which froze the aurora.
     let isVisible = true;
-    const intersectionObserver = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-      },
-      { threshold: 0.01 }
-    );
-    intersectionObserver.observe(container);
+    let intersectionObserver: IntersectionObserver | null = null;
+    if (!isMobile) {
+      intersectionObserver = new IntersectionObserver(
+        ([entry]) => {
+          isVisible = entry.isIntersecting;
+        },
+        { threshold: 0 }
+      );
+      intersectionObserver.observe(container);
+    }
 
     handleResize();
+    requestAnimationFrame(handleResize);
 
     // ---- render loop, frame-rate capped, paused when offscreen ----------
     let rafId = 0;
@@ -218,7 +238,7 @@ export function AuroraCanvas() {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("touchmove", onTouchMove);
       resizeObserver.disconnect();
-      intersectionObserver.disconnect();
+      intersectionObserver?.disconnect();
       geometry.dispose();
       material.dispose();
       renderer.dispose();
@@ -237,7 +257,7 @@ export function AuroraCanvas() {
     <div
       ref={containerRef}
       aria-hidden
-      className="pointer-events-none absolute inset-0 hidden dark:block"
+      className="pointer-events-none absolute inset-0 opacity-0 dark:opacity-100"
     >
       <canvas ref={canvasRef} className="h-full w-full" />
 
@@ -291,8 +311,6 @@ function buildFragmentShader(highQuality: boolean) {
   const ceilingHi = highQuality ? 0.24 : 0.15;
 
   return `
-    precision ${highQuality ? "highp" : "mediump"} float;
-
     varying vec2 vUv;
     uniform float uTime;
     uniform vec2 uResolution;
