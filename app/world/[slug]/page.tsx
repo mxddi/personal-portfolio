@@ -3,11 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { travelGalleries, getTravelGalleryBySlug } from "@/lib/data/travel-galleries";
+import { withMediaVersions } from "@/lib/media-version";
 import { GalleryGrid } from "@/components/world/gallery-grid";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return travelGalleries.map((g) => ({ slug: g.slug }));
@@ -53,7 +56,10 @@ export default async function TravelGalleryPage({ params }: PageProps) {
         </h1>
       </div>
 
-      <GalleryGrid images={gallery.images} location={gallery.location} />
+      <GalleryGrid
+        images={withMediaVersions(gallery.images)}
+        location={gallery.location}
+      />
     </div>
   );
 }

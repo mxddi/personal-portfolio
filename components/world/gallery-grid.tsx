@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 interface GalleryGridProps {
@@ -10,7 +9,7 @@ interface GalleryGridProps {
 }
 
 function isVideo(src: string) {
-  return /\.(mp4|mov|webm|m4v)$/i.test(src);
+  return /\.(mp4|mov|webm|m4v)(?:\?|$)/i.test(src);
 }
 
 function AutoplayVideo({
@@ -113,16 +112,15 @@ export function GalleryGrid({ images, location }: GalleryGridProps) {
               <AutoplayVideo
                 src={src}
                 preload="metadata"
-                className="h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             ) : (
-              <Image
+              <img
                 src={src}
                 alt={location}
-                fill
-                quality={75}
-                className="object-cover transition-transform duration-500 ease-precise hover:scale-105"
-                sizes="(min-width: 640px) 33vw, 50vw"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-precise hover:scale-105"
+                draggable={false}
+                decoding="async"
               />
             )}
           </button>
