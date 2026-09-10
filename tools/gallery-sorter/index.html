@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gallery sorter</title>
+    <style>
+      :root {
+        --bg: #09090b;
+        --panel: #18181b;
+        --line: #27272a;
+        --text: #fafafa;
+        --muted: #a1a1aa;
+        --accent: #2dd4bf;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font: 14px/1.4 ui-sans-serif, system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        display: grid;
+        grid-template-columns: 260px 1fr;
+      }
+      aside {
+        border-right: 1px solid var(--line);
+        overflow: auto;
+        padding: 20px 12px;
+      }
+      h1 {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 0 8px 16px;
+        font-weight: 600;
+      }
+      .loc {
+        display: block;
+        width: 100%;
+        text-align: left;
+        background: transparent;
+        color: var(--text);
+        border: 0;
+        border-radius: 6px;
+        padding: 10px 12px;
+        cursor: pointer;
+        font: inherit;
+      }
+      .loc:hover { background: #27272a; }
+      .loc.active { background: #134e4a; color: var(--accent); }
+      .count { color: var(--muted); font-size: 12px; }
+      main { display: flex; flex-direction: column; min-width: 0; }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--line);
+      }
+      header h2 { margin: 0; font-size: 18px; font-weight: 560; }
+      header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+      button.save {
+        background: var(--accent);
+        color: #042f2e;
+        border: 0;
+        border-radius: 6px;
+        padding: 10px 16px;
+        font: inherit;
+        font-weight: 650;
+        cursor: pointer;
+      }
+      button.save:disabled { opacity: 0.4; cursor: default; }
+      .grid {
+        padding: 20px;
+        overflow: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+        align-content: start;
+      }
+      .card {
+        position: relative;
+        aspect-ratio: 1;
+        overflow: hidden;
+        border-radius: 2px;
+        background: var(--panel);
+        cursor: grab;
+      }
+      .card.dragging { opacity: 0.4; }
+      .card.over { outline: 2px solid var(--accent); }
+      .card img, .card video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+      }
+      .badge {
+        position: absolute;
+        left: 6px;
+        top: 6px;
+        background: rgba(0,0,0,.72);
+        color: #fff;
+        font: 600 11px/1 ui-monospace, monospace;
+        padding: 4px 6px;
+        border-radius: 2px;
+      }
+      .kind {
+        position: absolute;
+        right: 6px;
+        bottom: 6px;
+        background: rgba(0,0,0,.72);
+        color: var(--accent);
+        font: 600 10px/1 ui-monospace, monospace;
+        letter-spacing: 0.08em;
+        padding: 4px 6px;
+        border-radius: 2px;
+      }
+      .empty { color: var(--muted); padding: 48px 24px; }
+    </style>
+  </head>
+  <body>
+    <aside>
+      <h1>Locations</h1>
+      <div id="locations"></div>
+    </aside>
+    <main>
+      <header>
+        <div>
+          <h2 id="title">Gallery sorter</h2>
+          <p>Drag photos to reorder, then save. Local only — writes into public/travel.</p>
+        </div>
+        <button class="save" id="save" disabled>Save order</button>
+      </header>
+      <div class="grid" id="grid">
+        <p class="empty">Pick a location.</p>
+      </div>
+    </main>
+    <script>
+      const locationsEl = document.getElementById("locations");
+      const gridEl = document.getElementById("grid");
+      const titleEl = document.getElementById("title");
+      const saveBtn = document.getElementById("save");
+
+      let current = null;
+      let items = [];
+      let dirty = false;
+      let dragFrom = null;
+
+      function isVideo(name) {
+        return /\.(mp4|mov|webm)$/i.test(name);
+      }
+
+      async function loadLocations() {
+        const res = await fetch("/api/locations");
+        const locs = await res.json();
+        locationsEl.innerHTML = "";
+        for (const loc of locs) {
+          const btn = document.createElement("button");
+          btn.className = "loc" + (current === loc.slug ? " active" : "");
+          btn.innerHTML = `${loc.location}<div class="count">${loc.count} items</div>`;
+          btn.onclick = () => openLocation(loc.slug, loc.location);
+          locationsEl.appendChild(btn);
+        }
+      }
+
+      async function openLocation(slug, location) {
+        current = slug;
+        titleEl.textContent = location;
+        dirty = false;
+        saveBtn.disabled = true;
+        const res = await fetch(`/api/gallery/${slug}`);
+        items = await res.json();
+        render();
+        loadLocations();
+      }
+
+      function render() {
+        gridEl.innerHTML = "";
+        items.forEach((file, index) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.draggable = true;
+          card.dataset.index = String(index);
+          const media = isVideo(file)
+            ? `<video src="/media/${current}/${file}" muted loop autoplay playsinline preload="metadata"></video>`
+            : `<img src="/media/${current}/${file}" alt="" />`;
+          card.innerHTML = `${media}<span class="badge">${String(index + 1).padStart(2, "0")}</span>${
+            isVideo(file) ? `<span class="kind">VID</span>` : ""
+          }`;
+          card.addEventListener("dragstart", (e) => {
+            dragFrom = index;
+            card.classList.add("dragging");
+            e.dataTransfer.effectAllowed = "move";
+          });
+          card.addEventListener("dragend", () => {
+            dragFrom = null;
+            card.classList.remove("dragging");
+            for (const el of gridEl.querySelectorAll(".over")) el.classList.remove("over");
+          });
+          card.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            card.classList.add("over");
+          });
+          card.addEventListener("dragleave", () => card.classList.remove("over"));
+          card.addEventListener("drop", (e) => {
+            e.preventDefault();
+            card.classList.remove("over");
+            if (dragFrom === null || dragFrom === index) return;
+            const moved = items.splice(dragFrom, 1)[0];
+            items.splice(index, 0, moved);
+            dirty = true;
+            saveBtn.disabled = false;
+            render();
+          });
+          gridEl.appendChild(card);
+        });
+      }
+
+      saveBtn.onclick = async () => {
+        if (!current || !dirty) return;
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Saving…";
+        const res = await fetch(`/api/gallery/${current}/reorder`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ order: items }),
+        });
+        if (!res.ok) {
+          const err = await res.text();
+          alert(err || "Save failed");
+          saveBtn.disabled = false;
+          saveBtn.textContent = "Save order";
+          return;
+        }
+        const saved = await res.json();
+        items = saved.files;
+        dirty = false;
+        saveBtn.textContent = "Saved";
+        setTimeout(() => { saveBtn.textContent = "Save order"; }, 1200);
+        loadLocations();
+        render();
+      };
+
+      loadLocations();
+    </script>
+  </body>
+</html>

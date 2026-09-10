@@ -15,8 +15,10 @@ export const pillars: Pillar[] = [
     skills: [
       "Python / Java / TypeScript / C++",
       "AWS · PostgreSQL · Node.js · Flask",
+      "Data Engineering · API Development",
       "React Native · Cross-Platform Apps",
       "Git / GitHub / Jira Workflows",
+      "AI & Machine Learning Integration"
     ],
     icon: "code",
   },
@@ -30,6 +32,7 @@ export const pillars: Pillar[] = [
       "Signal Processing (FFT, Denoising)",
       "Convolutional Autoencoders",
       "NumPy / SciPy / Pandas",
+      "Machine Learning (PyTorch, Scikit-learn, TensorFlow)",
     ],
     icon: "atom",
   },
