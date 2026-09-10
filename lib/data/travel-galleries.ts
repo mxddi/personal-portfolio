@@ -20,12 +20,12 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "washington-dc",
     location: "Washington D.C.",
-    images: buildImages("washington-dc", 10),
+    images: buildImages("washington-dc", 9),
   },
   {
     slug: "sintra-portugal",
     location: "Sintra, Portugal",
-    images: buildImages("sintra-portugal", 6),
+    images: buildImages("sintra-portugal", 10),
   },
   {
     slug: "astorga-spain",
@@ -60,12 +60,14 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "los-angeles-california",
     location: "Los Angeles, California",
-    images: buildImages("los-angeles-california", 2),
+    images: [
+      
+    ],
   },
   {
     slug: "ybbs-an-der-donau-austria",
     location: "Ybbs an der Donau, Austria",
-    images: buildImages("ybbs-an-der-donau-austria", 1),
+    images: buildImages("ybbs-an-der-donau-austria", 2),
   },
   {
     slug: "segovia-spain",
@@ -89,12 +91,12 @@ export const travelGalleries: TravelGallery[] = [
       "/travel/fethiye-turkey/01.jpg",
       "/travel/fethiye-turkey/02.jpg",
       "/travel/fethiye-turkey/03.jpg",
-      "/travel/fethiye-turkey/04.mp4",
-      "/travel/fethiye-turkey/05.jpg",
+      "/travel/fethiye-turkey/04.jpg",
+      "/travel/fethiye-turkey/05.mp4",
       "/travel/fethiye-turkey/06.jpg",
       "/travel/fethiye-turkey/07.jpg",
       "/travel/fethiye-turkey/08.jpg",
-      "/travel/fethiye-turkey/09.jpg",
+      "/travel/fethiye-turkey/09.mp4",
       "/travel/fethiye-turkey/10.jpg",
       "/travel/fethiye-turkey/11.jpg",
       "/travel/fethiye-turkey/12.jpg",
@@ -102,7 +104,7 @@ export const travelGalleries: TravelGallery[] = [
       "/travel/fethiye-turkey/14.jpg",
       "/travel/fethiye-turkey/15.jpg",
       "/travel/fethiye-turkey/16.jpg",
-      "/travel/fethiye-turkey/17.mp4",
+      "/travel/fethiye-turkey/17.jpg",
       "/travel/fethiye-turkey/18.jpg",
       "/travel/fethiye-turkey/19.jpg"
     ],
@@ -110,12 +112,17 @@ export const travelGalleries: TravelGallery[] = [
   {
     slug: "paris-france",
     location: "Paris, France",
-    images: buildImages("paris-france", 1),
+    images: buildImages("paris-france", 8),
   },
   {
     slug: "zagreb-croatia",
     location: "Zagreb, Croatia",
     images: buildImages("zagreb-croatia", 1),
+  },
+  {
+    slug: "landivy-france",
+    location: "Landivy, France",
+    images: buildImages("landivy-france", 10),
   },
 ];
 

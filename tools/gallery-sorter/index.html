@@ -50,7 +50,7 @@
       .loc:hover { background: #27272a; }
       .loc.active { background: #134e4a; color: var(--accent); }
       .count { color: var(--muted); font-size: 12px; }
-      main { display: flex; flex-direction: column; min-width: 0; }
+      main { position: relative; display: flex; flex-direction: column; min-width: 0; }
       header {
         display: flex;
         align-items: center;
@@ -61,9 +61,8 @@
       }
       header h2 { margin: 0; font-size: 18px; font-weight: 560; }
       header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
-      button.save {
-        background: var(--accent);
-        color: #042f2e;
+      .actions { display: flex; gap: 8px; }
+      button.save, button.add {
         border: 0;
         border-radius: 6px;
         padding: 10px 16px;
@@ -71,7 +70,43 @@
         font-weight: 650;
         cursor: pointer;
       }
-      button.save:disabled { opacity: 0.4; cursor: default; }
+      button.save {
+        background: var(--accent);
+        color: #042f2e;
+      }
+      button.add {
+        background: #27272a;
+        color: var(--text);
+      }
+      button.save:disabled, button.add:disabled { opacity: 0.4; cursor: default; }
+      main.file-over .drop-hint { display: flex; }
+      .drop-hint {
+        display: none;
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        align-items: center;
+        justify-content: center;
+        background: rgba(9, 9, 11, 0.78);
+        color: var(--accent);
+        font-weight: 650;
+        pointer-events: none;
+      }
+      .remove {
+        position: absolute;
+        right: 6px;
+        top: 6px;
+        z-index: 2;
+        width: 24px;
+        height: 24px;
+        border: 0;
+        border-radius: 2px;
+        background: rgba(0,0,0,.72);
+        color: #f4f4f5;
+        font: 600 14px/24px ui-sans-serif, system-ui, sans-serif;
+        cursor: pointer;
+      }
+      .remove:hover { background: #b91c1c; color: #fff; }
       .grid {
         padding: 20px;
         overflow: auto;
@@ -129,10 +164,15 @@
       <header>
         <div>
           <h2 id="title">Gallery sorter</h2>
-          <p>Drag photos to reorder, then save. Local only — writes into public/travel.</p>
+          <p>Drag files in to add, drag to reorder, X to remove, then save.</p>
         </div>
-        <button class="save" id="save" disabled>Save order</button>
+        <div class="actions">
+          <button class="add" id="add" disabled>Add photos</button>
+          <button class="save" id="save" disabled>Save order</button>
+        </div>
       </header>
+      <input id="file" type="file" accept="image/*,.heic,.heif,video/mp4,video/quicktime,video/webm,.mov,.mp4" multiple hidden />
+      <div class="drop-hint">Drop to add to this gallery</div>
       <div class="grid" id="grid">
         <p class="empty">Pick a location.</p>
       </div>
@@ -142,11 +182,15 @@
       const gridEl = document.getElementById("grid");
       const titleEl = document.getElementById("title");
       const saveBtn = document.getElementById("save");
+      const addBtn = document.getElementById("add");
+      const fileInput = document.getElementById("file");
+      const mainEl = document.querySelector("main");
 
       let current = null;
       let items = [];
       let dirty = false;
       let dragFrom = null;
+      let locationName = "Gallery sorter";
 
       function isVideo(name) {
         return /\.(mp4|mov|webm)$/i.test(name);
@@ -167,9 +211,11 @@
 
       async function openLocation(slug, location) {
         current = slug;
+        locationName = location;
         titleEl.textContent = location;
         dirty = false;
         saveBtn.disabled = true;
+        addBtn.disabled = false;
         const res = await fetch(`/api/gallery/${slug}`);
         items = await res.json();
         render();
@@ -188,8 +234,24 @@
             : `<img src="/media/${current}/${file}" alt="" />`;
           card.innerHTML = `${media}<span class="badge">${String(index + 1).padStart(2, "0")}</span>${
             isVideo(file) ? `<span class="kind">VID</span>` : ""
-          }`;
+          }<button class="remove" type="button" aria-label="Remove">×</button>`;
+          card.querySelector(".remove").addEventListener("pointerdown", (e) => {
+            e.stopPropagation();
+          });
+          card.querySelector(".remove").addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!confirm("Remove this from the gallery?")) return;
+            items.splice(index, 1);
+            dirty = true;
+            saveBtn.disabled = false;
+            render();
+          });
           card.addEventListener("dragstart", (e) => {
+            if (e.target.closest(".remove")) {
+              e.preventDefault();
+              return;
+            }
             dragFrom = index;
             card.classList.add("dragging");
             e.dataTransfer.effectAllowed = "move";
@@ -200,11 +262,20 @@
             for (const el of gridEl.querySelectorAll(".over")) el.classList.remove("over");
           });
           card.addEventListener("dragover", (e) => {
+            if (isFileDrag(e)) {
+              e.preventDefault();
+              return;
+            }
             e.preventDefault();
             card.classList.add("over");
           });
           card.addEventListener("dragleave", () => card.classList.remove("over"));
           card.addEventListener("drop", (e) => {
+            if (isFileDrag(e)) {
+              e.preventDefault();
+              addFiles(e.dataTransfer.files);
+              return;
+            }
             e.preventDefault();
             card.classList.remove("over");
             if (dragFrom === null || dragFrom === index) return;
@@ -218,8 +289,12 @@
         });
       }
 
-      saveBtn.onclick = async () => {
-        if (!current || !dirty) return;
+      function isFileDrag(e) {
+        return e.dataTransfer && [...e.dataTransfer.types].includes("Files");
+      }
+
+      async function saveOrder() {
+        if (!current || !dirty) return true;
         saveBtn.disabled = true;
         saveBtn.textContent = "Saving…";
         const res = await fetch(`/api/gallery/${current}/reorder`, {
@@ -232,7 +307,7 @@
           alert(err || "Save failed");
           saveBtn.disabled = false;
           saveBtn.textContent = "Save order";
-          return;
+          return false;
         }
         const saved = await res.json();
         items = saved.files;
@@ -241,7 +316,62 @@
         setTimeout(() => { saveBtn.textContent = "Save order"; }, 1200);
         loadLocations();
         render();
+        return true;
+      }
+
+      async function addFiles(fileList) {
+        if (!current) {
+          alert("Pick a location first.");
+          return;
+        }
+        const files = [...fileList].filter(Boolean);
+        if (!files.length) return;
+        if (dirty && !(await saveOrder())) return;
+        addBtn.disabled = true;
+        addBtn.textContent = "Adding…";
+        const body = new FormData();
+        for (const file of files) body.append("files", file, file.name);
+        const res = await fetch(`/api/gallery/${current}/add`, {
+          method: "POST",
+          body,
+        });
+        if (!res.ok) {
+          alert((await res.text()) || "Add failed");
+          addBtn.disabled = false;
+          addBtn.textContent = "Add photos";
+          return;
+        }
+        const saved = await res.json();
+        items = saved.files;
+        dirty = false;
+        saveBtn.disabled = true;
+        addBtn.disabled = false;
+        addBtn.textContent = "Add photos";
+        loadLocations();
+        render();
+      }
+
+      saveBtn.onclick = saveOrder;
+      addBtn.onclick = () => fileInput.click();
+      fileInput.onchange = () => {
+        addFiles(fileInput.files);
+        fileInput.value = "";
       };
+
+      mainEl.addEventListener("dragover", (e) => {
+        if (!isFileDrag(e) || !current) return;
+        e.preventDefault();
+        mainEl.classList.add("file-over");
+      });
+      mainEl.addEventListener("dragleave", (e) => {
+        if (e.target === mainEl) mainEl.classList.remove("file-over");
+      });
+      mainEl.addEventListener("drop", (e) => {
+        if (!isFileDrag(e)) return;
+        e.preventDefault();
+        mainEl.classList.remove("file-over");
+        addFiles(e.dataTransfer.files);
+      });
 
       loadLocations();
     </script>
