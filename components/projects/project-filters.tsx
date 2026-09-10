@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { LayoutGrid, List, SlidersHorizontal } from "lucide-react";
-import { Project } from "@/lib/types";
+import { Project, ProjectCategorySlug } from "@/lib/types";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ProjectListRow } from "@/components/projects/project-list-row";
 import { cn } from "@/lib/utils";
@@ -12,9 +12,11 @@ type ViewMode = "grid" | "list";
 export function ProjectFilters({
   projects,
   tags,
+  categorySlug,
 }: {
   projects: Project[];
   tags: string[];
+  categorySlug: ProjectCategorySlug;
 }) {
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>("grid");
@@ -79,13 +81,21 @@ export function ProjectFilters({
       {view === "grid" ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {filtered.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
+            <ProjectCard
+              key={project.slug}
+              project={project}
+              categorySlug={categorySlug}
+            />
           ))}
         </div>
       ) : (
         <div className="flex flex-col divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
           {filtered.map((project) => (
-            <ProjectListRow key={project.slug} project={project} />
+            <ProjectListRow
+              key={project.slug}
+              project={project}
+              categorySlug={categorySlug}
+            />
           ))}
         </div>
       )}

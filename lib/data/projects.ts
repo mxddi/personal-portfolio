@@ -1,11 +1,11 @@
-import { Project } from "@/lib/types";
+import { Project, ProjectCategorySlug } from "@/lib/types";
 
 export const projects: Project[] = [
   // ---------- Software Engineering (T-Mobile, 2020–2023) ----------
   {
     slug: "tmo-go-iot-bike-security",
     title: "T-Mo Go — IoT Bike Security & Tracking",
-    category: "software-engineering",
+    categories: ["software-engineering"],
     summary:
       "Lead backend developer for a T-Mobile DevEdge hackathon build: a geofenced anti-theft system that flags a bike as stolen the instant it leaves a locked zone, streams live location to a companion iOS app, and fires an automated SMS alert to the rider.",
     stack: [
@@ -23,7 +23,7 @@ export const projects: Project[] = [
   {
     slug: "iot-telemetry-health-probe",
     title: "IoT Telemetry Health Probe",
-    category: "software-engineering",
+    categories: ["software-engineering"],
     summary:
       "A diagnostic web tool that decodes raw hex-string UDP payloads from field devices into readable telemetry — temperature, battery level, speed, status — and surfaces live service health, cutting down the team's manual testing time.",
     stack: ["JavaScript", "Python", "UDP", "REST"],
@@ -34,7 +34,7 @@ export const projects: Project[] = [
   {
     slug: "smart-home-device-control-app",
     title: "Smart Home Device Control App",
-    category: "software-engineering",
+    categories: ["software-engineering"],
     summary:
       "React Native front-end for controlling mock smart-home devices — locks, bulbs — over a shared IoT API, with animated on/off interactions and live device state fetched on mount.",
     stack: ["React Native", "JavaScript", "REST API"],
@@ -45,7 +45,7 @@ export const projects: Project[] = [
   {
     slug: "wifi-significant-location-classifier",
     title: "Significant-Location Classifier from Wi-Fi Scans",
-    category: "software-engineering",
+    categories: ["software-engineering"],
     summary:
       "Prototyped a way to infer whether a scanned Wi-Fi network corresponds to home, work, or school by clustering visit frequency and time-of-day patterns — aimed at reducing noisy location pings without extra user input.",
     stack: ["Python", "Clustering", "Decision Trees", "Pandas"],
@@ -56,7 +56,7 @@ export const projects: Project[] = [
   {
     slug: "timeslice-ai-scheduling-app",
     title: "TimeSlice — AI Daily Planning Assistant",
-    category: "software-engineering",
+    categories: ["software-engineering"],
     summary:
       "Built overnight at TechTogether Seattle: a mobile app that slices the day into 'time blocks' and uses machine learning to learn routine patterns, suggest Pomodoro-style breaks, and auto-reschedule the rest of the day when a task runs long. Won the 'Planting the Seed for Growth' award.",
     stack: [
@@ -78,7 +78,7 @@ export const projects: Project[] = [
   {
     slug: "synapse-ai-task-prioritization",
     title: "Synapse — AI-Powered Automatic Task Prioritization",
-    category: "software-engineering",
+    categories: ["software-engineering"],
     summary:
       "A web app that bridges daily to-do lists and long-term goals: tasks pulled from Google Calendar/Tasks are auto-scored on urgency and goal-alignment, plotted on a live Eisenhower Matrix, and paired with a Groq-powered AI coach that flags misaligned tasks and suggests schedule adjustments.",
     stack: [
@@ -95,12 +95,26 @@ export const projects: Project[] = [
       demo: "https://synapse3-topaz.vercel.app",
     },
   },
+  {
+    slug: "rocket-operation-gnc-sim",
+    title: "Rocket Operation GNC Sim",
+    categories: ["software-engineering", "computational-physics"],
+    summary:
+      "A C++ foundation for simulating rocket flight dynamics through custom 3D vector mathematics, including position, gravity, forces, and navigation-related calculations.",
+    stack: ["C++", "Vector3D", "Docker"],
+    tags: ["Physics Simulation", "Numerical Methods", "GNC"],
+    date: "2026-09-01",
+    ongoing: true,
+    links: {
+      repo: "https://github.com/mxddi/rocket_operation_sim",
+    },
+  },
 
   {
     slug: "grand-pre-crop-planning-system",
     title:
       "Grand Pré, Les 3 Jardins — Crop Planning & Resource Allocation System",
-    category: "software-engineering",
+    categories: ["software-engineering"],
     summary:
       "In rural France I designed a custom Excel-based crop management system for a working farm's greenhouse: a color-coded grid modeling every planting bed by crop category (leaf, root, fruit, aromatic) and status (seeded, planted, completed) to optimize planting schedules, yield tracking, and resource allocation across dozens of concurrent rotations.",
     stack: ["Microsoft Excel", "Conditional Formatting", "Data Modeling"],
@@ -119,9 +133,9 @@ export const projects: Project[] = [
   {
     slug: "dr16q-ehvo-quasar-pipeline",
     title: "Extremely High Velocity Quasar Outflow Research Pipeline",
-    category: "computational-physics",
+    categories: ["computational-physics"],
     summary:
-      "My working branch of the UW Bothell quasar research group's collaborative codebase: Python tools for normalizing raw SDSS spectra, flagging absorption troughs, and running cross-correlation, redshift, and variability analyses to isolate extremely high-velocity outflow (EHVO) quasars from the DR16 sample.",
+      "My previous working branch of the UW Bothell quasar research group's collaborative codebase: Python tools for normalizing raw SDSS spectra, flagging absorption troughs, and running cross-correlation, redshift, and variability analyses to isolate extremely high-velocity outflow (EHVO) quasars from the DR16 sample. Note: Most up to date codebase is hosted on a private repository, commits to be merged later.",
     stack: [
       "Python",
       "NumPy",
@@ -141,7 +155,7 @@ export const projects: Project[] = [
   {
     slug: "monte-carlo-simulations-python",
     title: "Monte Carlo Simulations in Python",
-    category: "computational-physics",
+    categories: ["computational-physics"],
     summary:
       "Two Monte Carlo case studies built from first principles: modeling energy deposition in a CERN ATLAS-style calorimeter cell via inverse transform sampling, and simulating a year of stock price paths with geometric Brownian motion.",
     stack: ["Python", "NumPy", "Matplotlib"],
@@ -157,7 +171,7 @@ export const projects: Project[] = [
   {
     slug: "quantum-eraser-superposition",
     title: "Quantum Eraser: Erasing & Restoring Which-Path Information",
-    category: "computational-physics",
+    categories: ["computational-physics"],
     summary:
       "Built a polarizer-and-double-slit setup to test at what polarization angle a photon's which-path information is erased, mapping interference-fringe visibility against filter angle to pinpoint the laser's dominant polarization axis.",
     stack: [
@@ -175,7 +189,7 @@ export const projects: Project[] = [
   {
     slug: "measuring-plancks-constant-leds",
     title: "Measuring Planck's Constant Using LEDs",
-    category: "computational-physics",
+    categories: ["computational-physics"],
     summary:
       "Derived Planck's constant from scratch by measuring the threshold voltage of four LED colors and relating the slope of voltage-vs-frequency to h — landing within 3.7% of the accepted value using a low-cost breadboard circuit.",
     stack: ["Breadboard Circuit", "Multimeter", "Linear Regression"],
@@ -187,7 +201,7 @@ export const projects: Project[] = [
   {
     slug: "portable-electric-cloud-chamber",
     title: "Portable Electric Cloud Chamber",
-    category: "electrical-engineering",
+    categories: ["electrical-engineering"],
     summary:
       "Designed and built a reusable, dry-ice-free cloud chamber using eight cascaded Peltier thermoelectric coolers and a closed-loop water cooling system, sustaining the −26°C gradient needed to visualize ionizing radiation tracks. Partnered withe mechanical engineer Branden Floyd who taught me how to solder, 3D print, and design the cooling system. Invited to present the device to the college's Board of Trustees, made available to students as a public demonstration tool, and awarded Outstanding STEM Project.",
     stack: ["Fusion 360 CAD", "Peltier TECs", "DC Power Systems", "3D Printing"],
@@ -210,7 +224,7 @@ export const projects: Project[] = [
   {
     slug: "lifi-optical-data-transmission",
     title: "LiFi: Transmitting Data via Light Waves",
-    category: "electrical-engineering",
+    categories: ["electrical-engineering"],
     summary:
       "Built a laser-and-phototransistor link that pulses binary-encoded text between two Arduinos over free-space light, then characterized transmission accuracy against distance from 50cm to 300cm.",
     stack: ["Arduino", "Laser Diode", "Phototransistor", "Serial Comms"],
@@ -224,7 +238,7 @@ export const projects: Project[] = [
   {
     slug: "quantum-rng-photoresistor-circuit",
     title: "Quantum Random Number Generator Circuit",
-    category: "electrical-engineering",
+    categories: ["electrical-engineering"],
     summary:
       "Designed a beamsplitter-and-photoresistor circuit intended to harvest true randomness from vacuum fluctuations, comparing voltage readings across two polarized paths to output a binary digit per Arduino cycle.",
     stack: ["Arduino", "Beamsplitter", "Photoresistors", "3D-Printed Mounts"],
@@ -239,19 +253,39 @@ export const projects: Project[] = [
   },
 ];
 
+export function projectInCategory(
+  project: Project,
+  category: ProjectCategorySlug
+) {
+  return project.categories.includes(category);
+}
+
+export function getProjectHref(
+  project: Project,
+  category?: ProjectCategorySlug
+) {
+  const categorySlug = category ?? project.categories[0];
+  return `/projects/${categorySlug}/${project.slug}`;
+}
+
 export function getProjectsByCategory(category: string) {
+  const slug = category as ProjectCategorySlug;
   return projects
-    .filter((p) => p.category === category)
+    .filter((p) => projectInCategory(p, slug))
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
 export function getProjectBySlug(category: string, slug: string) {
-  return projects.find((p) => p.category === category && p.slug === slug);
+  const categorySlug = category as ProjectCategorySlug;
+  return projects.find(
+    (p) => p.slug === slug && projectInCategory(p, categorySlug)
+  );
 }
 
 export function getAllTags(category?: string) {
-  const source = category
-    ? projects.filter((p) => p.category === category)
+  const categorySlug = category as ProjectCategorySlug | undefined;
+  const source = categorySlug
+    ? projects.filter((p) => projectInCategory(p, categorySlug))
     : projects;
   const tags = new Set<string>();
   source.forEach((p) => p.tags.forEach((t) => tags.add(t)));

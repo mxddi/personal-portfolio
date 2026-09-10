@@ -61,7 +61,11 @@ export default async function CategoryProjectsPage({ params }: PageProps) {
       </div>
 
       <div className="mt-10">
-        <ProjectFilters projects={projects} tags={tags} />
+        <ProjectFilters
+          projects={projects}
+          tags={tags}
+          categorySlug={category.slug}
+        />
       </div>
     </div>
   );

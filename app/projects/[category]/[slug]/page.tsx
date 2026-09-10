@@ -13,7 +13,9 @@ interface PageProps {
 }
 
 export function generateStaticParams() {
-  return projects.map((p) => ({ category: p.category, slug: p.slug }));
+  return projects.flatMap((p) =>
+    p.categories.map((category) => ({ category, slug: p.slug }))
+  );
 }
 
 export async function generateMetadata({

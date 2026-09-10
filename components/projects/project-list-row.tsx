@@ -1,12 +1,19 @@
 import Link from "next/link";
-import { Project } from "@/lib/types";
+import { getProjectHref } from "@/lib/data/projects";
+import { Project, ProjectCategorySlug } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { Tag } from "@/components/ui/tag";
 import { ArrowUpRight } from "lucide-react";
 
-export function ProjectListRow({ project }: { project: Project }) {
+export function ProjectListRow({
+  project,
+  categorySlug,
+}: {
+  project: Project;
+  categorySlug?: ProjectCategorySlug;
+}) {
   const externalHref = project.links?.repo ?? project.links?.demo;
-  const href = externalHref ?? `/projects/${project.category}/${project.slug}`;
+  const href = externalHref ?? getProjectHref(project, categorySlug);
   const externalProps = externalHref
     ? { target: "_blank", rel: "noreferrer" }
     : {};

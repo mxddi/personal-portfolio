@@ -14,7 +14,7 @@ export interface ProjectCategory {
 export interface Project {
   slug: string;
   title: string;
-  category: ProjectCategorySlug;
+  categories: ProjectCategorySlug[];
   summary: string;
   stack: string[];
   tags: string[];
