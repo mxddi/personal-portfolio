@@ -14,7 +14,8 @@ export function Pillars() {
       <div className="container-page py-20 sm:py-24">
         <SectionHeading
           eyebrow="Core Skills"
-          title="Three disciplines, one vision"
+          // title="Three disciplines, one vision"
+          title="Three disciplines:"
           //description="Every project I take on draws from at least one of these domains, sometimes all three."
         />
 

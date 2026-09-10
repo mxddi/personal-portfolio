@@ -6,19 +6,14 @@ import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 
-// Applies the saved (or system) theme before hydration, so there's no flash
-// of the wrong theme on load. Kept intentionally tiny and dependency-free.
+// Applies the saved theme before hydration so there's no flash on load.
+// Unset visitors default to light — not the OS color scheme.
 const THEME_INIT_SCRIPT = `
   (function () {
     try {
-      var stored = localStorage.getItem("theme");
-      var theme =
-        stored === "light" || stored === "dark"
-          ? stored
-          : window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-      if (theme === "dark") document.documentElement.classList.add("dark");
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
     } catch (e) {}
   })();
 `;

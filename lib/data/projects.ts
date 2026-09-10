@@ -186,7 +186,7 @@ export const projects: Project[] = [
     title: "Portable Electric Cloud Chamber",
     category: "electrical-engineering",
     summary:
-      "Co-designed a reusable, dry-ice-free cloud chamber using eight cascaded Peltier thermoelectric coolers and a closed-loop water cooling system, sustaining the −26°C gradient needed to visualize ionizing radiation tracks. Invited to present the device to the college's Board of Trustees, made available to students as a public demonstration tool, and awarded Outstanding STEM Project.",
+      "Designed and built a reusable, dry-ice-free cloud chamber using eight cascaded Peltier thermoelectric coolers and a closed-loop water cooling system, sustaining the −26°C gradient needed to visualize ionizing radiation tracks. Partnered withe mechanical engineer Branden Floyd who taught me how to solder, 3D print, and design the cooling system. Invited to present the device to the college's Board of Trustees, made available to students as a public demonstration tool, and awarded Outstanding STEM Project.",
     stack: ["Fusion 360 CAD", "Peltier TECs", "DC Power Systems", "3D Printing"],
     tags: [
       "Electrical Engineering",
@@ -196,6 +196,9 @@ export const projects: Project[] = [
       "Hardware-Electrical Interfacing",
     ],
     date: "2024-03-13",
+    image: "/projects/cloud-chamber.jpg",
+    imageWidth: 1600,
+    imageHeight: 1200,
     links: {
       writeup:
         "https://www.linkedin.com/posts/madalygregory_moving-into-my-last-year-of-undergraduate-ugcPost-7398862499166662656-3Mqc",
@@ -213,7 +216,7 @@ export const projects: Project[] = [
     image: "/projects/lifi-poster.jpg",
     imageWidth: 1600,
     imageHeight: 1280,
-    cardImage: "/projects/lifi-card.jpg",
+    cardImage: "/projects/life-card.jpg",
   },
   {
     slug: "quantum-rng-photoresistor-circuit",
@@ -224,6 +227,9 @@ export const projects: Project[] = [
     stack: ["Arduino", "Beamsplitter", "Photoresistors", "3D-Printed Mounts"],
     tags: ["Electrical Engineering", "Embedded Systems"],
     date: "2023-11-29",
+    image: "/projects/random-digit-card.jpg",
+    imageWidth: 1024,
+    imageHeight: 768,
     links: {
       writeup: "/projects/quantum-rng-report.pdf",
     },

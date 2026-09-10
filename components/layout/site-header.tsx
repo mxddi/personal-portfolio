@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -46,42 +47,48 @@ export function SiteHeader() {
           M<span className="text-accent">/</span>G
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.map((link) => {
-            const isActive = isLinkActive(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "relative rounded-sm px-3 py-2 font-mono text-sm uppercase tracking-widest transition-colors duration-200",
-                  isActive
-                    ? "text-zinc-950 dark:text-zinc-50"
-                    : "text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
-                )}
-              >
-                {link.label}
-                {isActive && (
-                  <span className="absolute inset-x-3 -bottom-[1px] h-px bg-accent" />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="flex items-center gap-2">
+          <nav className="hidden items-center gap-1 md:flex">
+            {NAV_LINKS.map((link) => {
+              const isActive = isLinkActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "relative rounded-sm px-3 py-2 font-mono text-sm uppercase tracking-widest transition-colors duration-200",
+                    isActive
+                      ? "text-zinc-950 dark:text-zinc-50"
+                      : "text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+                  )}
+                >
+                  {link.label}
+                  {isActive && (
+                    <span className="absolute inset-x-3 -bottom-[1px] h-px bg-accent" />
+                  )}
+                </Link>
+              );
+            })}
+            <ThemeToggle />
+          </nav>
 
-        <button
-          type="button"
-          onClick={() => setIsMenuOpen((open) => !open)}
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isMenuOpen}
-          className="flex h-9 w-9 items-center justify-center rounded-sm border border-zinc-200 text-zinc-700 transition-colors duration-200 hover:border-accent/40 hover:text-accent dark:border-zinc-800 dark:text-zinc-300 md:hidden"
-        >
-          {isMenuOpen ? (
-            <X className="h-4 w-4" strokeWidth={1.5} />
-          ) : (
-            <Menu className="h-4 w-4" strokeWidth={1.5} />
-          )}
-        </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((open) => !open)}
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
+              className="flex h-9 w-9 items-center justify-center rounded-sm border border-zinc-200 text-zinc-700 transition-colors duration-200 hover:border-accent/40 hover:text-accent dark:border-zinc-800 dark:text-zinc-300"
+            >
+              {isMenuOpen ? (
+                <X className="h-4 w-4" strokeWidth={1.5} />
+              ) : (
+                <Menu className="h-4 w-4" strokeWidth={1.5} />
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
       {isMenuOpen && (

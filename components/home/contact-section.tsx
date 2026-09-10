@@ -16,7 +16,7 @@ export function ContactSection() {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 font-mono text-sm uppercase tracking-[0.2em] text-accent">
               <span className="h-px w-6 bg-accent/60" />
-              Let&apos;s Collaborate
+              Collaboration
             </div>
             <h2 className="max-w-md text-3xl font-medium tracking-tight text-zinc-950 sm:text-4xl dark:text-zinc-50">
               Get in touch:
