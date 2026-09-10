@@ -5,44 +5,47 @@ import { Moon, Sun } from "lucide-react";
 
 type Theme = "light" | "dark";
 
-function getStoredTheme(): Theme {
+const THEME_EVENT = "themechange";
+
+function readTheme(): Theme {
   if (typeof document === "undefined") return "light";
   return document.documentElement.classList.contains("dark")
     ? "dark"
     : "light";
 }
 
+function applyTheme(next: Theme) {
+  document.documentElement.classList.toggle("dark", next === "dark");
+  try {
+    localStorage.setItem("theme", next);
+  } catch {
+    // Ignore write failures (e.g. private browsing storage limits).
+  }
+  window.dispatchEvent(new CustomEvent<Theme>(THEME_EVENT, { detail: next }));
+}
+
 /**
- * Light/dark theme switch. The actual `.dark` class is applied synchronously
- * by an inline `beforeInteractive` script in the root layout (so there's no
- * flash of the wrong theme on load) — this component just reflects that
- * state and toggles it on click, persisting the choice to `localStorage`.
+ * Light/dark theme switch. The `.dark` class is applied synchronously by
+ * an inline script in the root layout (no flash on load). Every instance
+ * listens for the same `themechange` event so header and footer stay in
+ * sync.
  */
 export function ThemeToggle() {
-  // Start `null` until mounted so the icon doesn't mismatch the
-  // server-rendered markup before we can read the class the inline
-  // script already applied.
   const [theme, setTheme] = useState<Theme | null>(null);
 
   useEffect(() => {
-    setTheme(getStoredTheme());
+    setTheme(readTheme());
+    const onChange = (event: Event) => {
+      setTheme((event as CustomEvent<Theme>).detail);
+    };
+    window.addEventListener(THEME_EVENT, onChange);
+    return () => window.removeEventListener(THEME_EVENT, onChange);
   }, []);
-
-  const toggleTheme = () => {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.classList.toggle("dark", next === "dark");
-    try {
-      localStorage.setItem("theme", next);
-    } catch {
-      // Ignore write failures (e.g. private browsing storage limits).
-    }
-  };
 
   return (
     <button
       type="button"
-      onClick={toggleTheme}
+      onClick={() => applyTheme(theme === "dark" ? "light" : "dark")}
       aria-label={
         theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
       }
