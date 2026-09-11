@@ -129,7 +129,7 @@ export const awards: Award[] = [
     summary:
       "Recognized for a digital spoken presentation on the importance of financial literacy for youth via a filmed Public Service Announcement.",
   },
-  {
+  /*{
     slug: "fbla-business-achievement-future-level",
     title: "Business Achievement Award — Future Level",
     issuer: "Future Business Leaders of America - Phi Beta Lambda",
@@ -137,7 +137,7 @@ export const awards: Award[] = [
     category: "competitive",
     summary:
       "Nationally recognized for completing a series of achievements focused on service, education, personal progress, and chapter growth.",
-  },
+  }, */
   // ---------- Volunteering & Service ----------
   {
     slug: "ieee-outstanding-service-award",
