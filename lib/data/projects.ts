@@ -100,7 +100,7 @@ export const projects: Project[] = [
     title: "Rocket Operation GNC Sim",
     categories: ["software-engineering", "computational-physics"],
     summary:
-      "A C++ foundation for simulating rocket flight dynamics through custom 3D vector mathematics, including position, gravity, forces, and navigation-related calculations.",
+      "Designing a C++ foundation for simulating rocket flight dynamics using custom 3D vector mathematics, including position, gravity, forces, and navigation-related calculations.",
     stack: ["C++", "Vector3D", "Docker"],
     tags: ["Physics Simulation", "Numerical Methods", "GNC"],
     date: "2026-09-01",
@@ -226,7 +226,7 @@ export const projects: Project[] = [
     title: "LiFi: Transmitting Data via Light Waves",
     categories: ["electrical-engineering"],
     summary:
-      "Built a laser-and-phototransistor link that pulses binary-encoded text between two Arduinos over free-space light, then characterized transmission accuracy against distance from 50cm to 300cm.",
+      "Built a laser-and-phototransistor link that pulses binary-encoded text between two Arduinos over light, then calculated transmission accuracy against distance from 50cm to 300cm.",
     stack: ["Arduino", "Laser Diode", "Phototransistor", "Serial Comms"],
     tags: ["Electrical Engineering", "Optical Communication"],
     date: "2023-11-01",

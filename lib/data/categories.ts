@@ -14,7 +14,7 @@ export const categories: ProjectCategory[] = [
     label: "Computational Physics",
     shortLabel: "Physics",
     description:
-      "Rooted in physics.",
+      "Rooted in physics...",
     pattern: "orbit",
   },
   {
