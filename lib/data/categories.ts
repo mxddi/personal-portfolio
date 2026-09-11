@@ -6,7 +6,7 @@ export const categories: ProjectCategory[] = [
     label: "Software Engineering",
     shortLabel: "Software",
     description:
-      "Serverless backends, IoT integrations, and internal tooling built during three years at T-Mobile.",
+      "Serverless backends, IoT integrations, and internal tooling built during 2+ years at T-Mobile, as well as computational research collaboration and independent projects.",
     pattern: "terminal",
   },
   {

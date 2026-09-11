@@ -286,8 +286,6 @@ export function GlobeExperience() {
                 {selected.galleryUrl && (
                   <Link
                     href={selected.galleryUrl}
-                    target="_blank"
-                    rel="noreferrer"
                     className="group mt-4 inline-flex items-center gap-2 border-t border-white/10 pt-4 font-mono text-xs uppercase tracking-widest text-teal-300 transition-colors duration-200 hover:text-teal-200"
                   >
                     <Eye

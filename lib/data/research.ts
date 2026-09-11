@@ -6,7 +6,7 @@ export const researchPapers: ResearchPaper[] = [
     title:
       "Developing New Computational Tools to Identify the Most Extreme Outflows in the Universe",
     summary:
-      "Built an automated Python pipeline that isolates extremely high velocity quasar outflows (> 20% the speed of light) from Lyman-alpha forest spectral data contamination by exploiting variability timescales across multi-epoch SDSS spectra, with a redshift-invariant autoencoder (SpenderQ) as a fallback for reconstructing the intrinsic quasar continuum. Awarded a fully-funded travel grant from NASA-SURA, sponsored by the NASA Goddard Space Flight Center, to present at the 16th International Laser Interferometer Space Antenna Symposium.",
+      "Built an automated Python pipeline that isolates the fastest known extremely high velocity quasar outflows (surrounding supermassive black holes, at > 20% the speed of light) from Lyman-alpha forest spectral data contamination by exploiting physical variability timescales across multi-epoch SDSS spectra. Designed a pipeline integrating a redshift-invariant autoencoder (SpenderQ) as a fallback for reconstructing the intrinsic quasar continuum . Awarded a fully-funded travel grant from NASA-SURA, sponsored by the NASA Goddard Space Flight Center, to present at the 16th International Laser Interferometer Space Antenna Symposium.",
     date: "2025-11-01",
     ongoing: true,
     venue:
