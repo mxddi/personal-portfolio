@@ -54,6 +54,10 @@ function isHighlightedLocation(location: LocationPoint) {
   return HIGHLIGHTED_LOCATIONS.has(location.name);
 }
 
+function toLocationPoint(d: object): LocationPoint {
+  return d as LocationPoint;
+}
+
 function highlightRingColor(t: number) {
   const alpha = Math.pow(1 - t, 0.45);
   return `rgba(255, 65, 105, ${alpha})`;
@@ -237,38 +241,36 @@ export function GlobeExperience() {
           pointLng="lng"
           pointAltitude={0.01}
           pointResolution={32}
-          pointRadius={(d) =>
-            (d as LocationPoint).galleryUrl ||
-            (d as LocationPoint).notebooks.length > 0
-              ? 0.45
-              : 0.28
-          }
-          pointColor={(d) => {
-            const loc = d as LocationPoint;
+          pointRadius={(d: object) => {
+            const loc = toLocationPoint(d);
+            return loc.galleryUrl || loc.notebooks.length > 0 ? 0.45 : 0.28;
+          }}
+          pointColor={(d: object) => {
+            const loc = toLocationPoint(d);
             if (isHighlightedLocation(loc)) return HIGHLIGHT;
             if (loc.galleryUrl || loc.notebooks.length > 0) return ACCENT;
             return ACCENT_DIM;
           }}
-          pointLabel={(d) => (d as LocationPoint).name}
-          onPointClick={(d) => setSelected(d as LocationPoint)}
+          pointLabel={(d: object) => toLocationPoint(d).name}
+          onPointClick={(d: object) => setSelected(toLocationPoint(d))}
           ringsData={ringsData}
           ringLat="lat"
           ringLng="lng"
-          ringColor={(d) => {
-            const loc = d as LocationPoint;
+          ringColor={(d: object) => {
+            const loc = toLocationPoint(d);
             if (isHighlightedLocation(loc)) {
               return highlightRingColor;
             }
             return (t: number) => `rgba(94, 234, 212, ${1 - t})`;
           }}
-          ringMaxRadius={(d) =>
-            isHighlightedLocation(d as LocationPoint) ? 4.6 : 3.2
+          ringMaxRadius={(d: object) =>
+            isHighlightedLocation(toLocationPoint(d)) ? 4.6 : 3.2
           }
-          ringPropagationSpeed={(d) =>
-            isHighlightedLocation(d as LocationPoint) ? 1.35 : 2
+          ringPropagationSpeed={(d: object) =>
+            isHighlightedLocation(toLocationPoint(d)) ? 1.35 : 2
           }
-          ringRepeatPeriod={(d) =>
-            isHighlightedLocation(d as LocationPoint) ? 1000 : 1400
+          ringRepeatPeriod={(d: object) =>
+            isHighlightedLocation(toLocationPoint(d)) ? 1000 : 1400
           }
         />
       )}
