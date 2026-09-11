@@ -23,6 +23,16 @@ export const travelNotebooks: TravelNotebook[] = [
     pdfUrl: "/notebooks/paris-france.pdf",
     title: "The Life and Work of Dr. Roger Penrose",
   },
+  {
+    location: "Lisbon, Portugal",
+    pdfUrl: "/notebooks/lisbon-portugal.pdf",
+    title: "Observations — Lisbon",
+  },
+  {
+    location: "Tokyo, Japan",
+    pdfUrl: "/notebooks/tokyo-japan.pdf",
+    title: "Observations — Tokyo",
+  },
 ];
 
 /** A location can have more than one notebook — the viewer lets visitors cycle between them. */

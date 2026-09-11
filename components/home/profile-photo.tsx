@@ -12,13 +12,26 @@ function findProfileImage(): string | null {
   return null;
 }
 
+interface ProfilePhotoProps {
+  src?: string;
+  alt?: string;
+  /** Background size percentage — values above 100 crop/zoom in. */
+  imageScale?: number;
+  imagePosition?: string;
+}
+
 /**
  * Renders the hero portrait. Drop a photo into `/public` named `profile.jpg`
  * (or .jpeg/.png/.webp) and it will automatically replace this placeholder —
  * no code changes needed.
  */
-export function ProfilePhoto() {
-  const src = findProfileImage();
+export function ProfilePhoto({
+  src: srcOverride,
+  alt = "Portrait of Madaly G",
+  imageScale,
+  imagePosition = "center",
+}: ProfilePhotoProps = {}) {
+  const src = srcOverride ?? findProfileImage();
 
   return (
     <div className="relative w-36 min-[375px]:w-44 sm:w-44 md:w-52 lg:w-64 xl:w-72">
@@ -28,9 +41,15 @@ export function ProfilePhoto() {
             <link rel="preload" as="image" href={src} fetchPriority="high" />
             <div
               role="img"
-              aria-label="Portrait of Madaly G"
+              aria-label={alt}
               className="protect-image aspect-[3/4] w-full bg-cover bg-center"
-              style={{ backgroundImage: `url(${src})` }}
+              style={{
+                backgroundImage: `url(${src})`,
+                ...(imageScale !== undefined && {
+                  backgroundSize: `${imageScale}%`,
+                  backgroundPosition: imagePosition,
+                }),
+              }}
             />
           </>
         ) : (

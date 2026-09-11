@@ -155,10 +155,7 @@ export function GlobeExperience() {
   }, [locations, globeReady]);
 
   const ringsData = useMemo(
-    () =>
-      (locations ?? []).filter(
-        (d) => d.galleryUrl || d.notebooks.length > 0
-      ),
+    () => (locations ?? []).filter((d) => d.galleryUrl),
     [locations]
   );
 
@@ -320,8 +317,8 @@ export function GlobeExperience() {
                     className="group mt-4 inline-flex items-center gap-2 border-t border-white/10 pt-4 font-mono text-xs uppercase tracking-widest text-teal-300 transition-colors duration-200 hover:text-teal-200"
                   >
                     <Eye
-                      className="h-3.5 w-3.5 transition-transform duration-200 group-hover:scale-110"
-                      strokeWidth={1.5}
+                      className="h-5 w-5 transition-transform duration-200 group-hover:scale-110"
+                      strokeWidth={1.75}
                     />
                     More
                   </Link>

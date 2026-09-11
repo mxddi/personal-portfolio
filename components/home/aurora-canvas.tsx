@@ -10,7 +10,7 @@ import type * as Three from "three";
  * glow higher up, a thin bright atmospheric rim, and a dense starfield). A
  * single full-viewport plane, one fragment shader, three concerns:
  *   1. deep-space background + dense twinkling starfield
- *   2. Earth's limb across the lower third, with a thin bright rim plus
+ *   2. Earth's limb  lower third, with a thin bright rim plus
  *      broader atmospheric (Fresnel-style) scattering along the curve
  *   3. a fine-grained, ray/finger-textured green aurora curtain hugging
  *      the limb, fading into a softer, less structured red/crimson glow

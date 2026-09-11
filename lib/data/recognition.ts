@@ -89,7 +89,7 @@ export const awards: Award[] = [
     summary:
       "Recognized for co-designing a reusable, dry-ice-free cloud chamber; invited to present the device to the college's Board of Trustees and made it available to students as a public demonstration tool.",
   },
-  {
+  /*{
     slug: "ap-scholar-with-distinction",
     title: "AP Scholar with Distinction",
     issuer: "College Board",
@@ -97,7 +97,7 @@ export const awards: Award[] = [
     category: "academic",
     summary:
       "Recognizes exemplary college-level achievement for attaining an average score of at least 3.5 on all AP exams taken and scores of 3 or higher on five or more of these exams.",
-  },
+  },*/
   {
     slug: "presidents-award-educational-excellence",
     title: "President's Award for Educational Excellence",

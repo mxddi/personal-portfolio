@@ -14,7 +14,7 @@ const NAV_LINKS = [
   { href: "/research", label: "Research" },
   { href: "/flight-log", label: "Flight Log" },
   { href: "/real-estate", label: "Real Estate" },
-  { href: "/recognition", label: "Recognition" },
+  { href: "/recognition", label: "Bio" },
 ];
 
 export function SiteHeader() {

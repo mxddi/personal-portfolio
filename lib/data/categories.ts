@@ -22,7 +22,7 @@ export const categories: ProjectCategory[] = [
     label: "Electrical Engineering",
     shortLabel: "EE Systems",
     description:
-      "Hands-on circuits and hardware builds.",
+      "Hands-on circuits and hardware builds :)",
     pattern: "circuit",
   },
 ];
