@@ -56,11 +56,11 @@ export function Hero() {
               <span className="text-zinc-950 dark:text-zinc-50">
                 B.S. in Physics
               </span>{" "}
-              and am currently pursuing an{" "}
+              and am currently preparing to transition {" "}
               <span className="text-zinc-950 dark:text-zinc-50">
-                M.S. in Electrical Engineering
+              into an M.S. in Electrical Engineering program,  
               </span>
-              , with a focus on autonomous spacecraft systems.
+              {" "} where I plan to focus on autonomous spacecraft systems.
             </p>
 
             <div
