@@ -40,7 +40,24 @@ interface LocationPoint {
 
 const ACCENT = "#5eead4";
 const ACCENT_DIM = "#2dd4bf";
+const HIGHLIGHT = "#ff3864";
 const GLOBE_ATMOSPHERE = "#5ad2d6";
+
+const HIGHLIGHTED_LOCATIONS = new Set([
+  "Washington D.C.",
+  "Leon, Spain",
+  "Denver, Colorado",
+  "Paris, France",
+]);
+
+function isHighlightedLocation(location: LocationPoint) {
+  return HIGHLIGHTED_LOCATIONS.has(location.name);
+}
+
+function highlightRingColor(t: number) {
+  const alpha = Math.pow(1 - t, 0.45);
+  return `rgba(255, 65, 105, ${alpha})`;
+}
 
 export function GlobeExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -226,21 +243,33 @@ export function GlobeExperience() {
               ? 0.45
               : 0.28
           }
-          pointColor={(d) =>
-            (d as LocationPoint).galleryUrl ||
-            (d as LocationPoint).notebooks.length > 0
-              ? ACCENT
-              : ACCENT_DIM
-          }
+          pointColor={(d) => {
+            const loc = d as LocationPoint;
+            if (isHighlightedLocation(loc)) return HIGHLIGHT;
+            if (loc.galleryUrl || loc.notebooks.length > 0) return ACCENT;
+            return ACCENT_DIM;
+          }}
           pointLabel={(d) => (d as LocationPoint).name}
           onPointClick={(d) => setSelected(d as LocationPoint)}
           ringsData={ringsData}
           ringLat="lat"
           ringLng="lng"
-          ringColor={() => (t: number) => `rgba(94, 234, 212, ${1 - t})`}
-          ringMaxRadius={3.2}
-          ringPropagationSpeed={2}
-          ringRepeatPeriod={1400}
+          ringColor={(d) => {
+            const loc = d as LocationPoint;
+            if (isHighlightedLocation(loc)) {
+              return highlightRingColor;
+            }
+            return (t: number) => `rgba(94, 234, 212, ${1 - t})`;
+          }}
+          ringMaxRadius={(d) =>
+            isHighlightedLocation(d as LocationPoint) ? 4.6 : 3.2
+          }
+          ringPropagationSpeed={(d) =>
+            isHighlightedLocation(d as LocationPoint) ? 1.35 : 2
+          }
+          ringRepeatPeriod={(d) =>
+            isHighlightedLocation(d as LocationPoint) ? 1000 : 1400
+          }
         />
       )}
 

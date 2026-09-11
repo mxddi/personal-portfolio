@@ -23,7 +23,7 @@ Washington D.C.,38.9072,-77.0369,/world/washington-dc
 "Antalya, Turkey",36.8969,30.7133,
 "Shkoder, Albania",42.0683,19.5126,/world/shkoder-albania
 "Tirana, Albania",41.3275,19.8187,
-"Podgorica, Montenegro",42.4304,19.2594,
+"Podgorica, Montenegro",42.78,19.2594,
 "Zagreb, Croatia",45.8150,15.9819,/world/zagreb-croatia
 "Lima, Peru",-12.0464,-77.0428,
 Mexico,23.6345,-102.5528,
@@ -42,10 +42,10 @@ Vatican City,41.9029,12.4534,
 Kosovo,42.6026,20.9030,
 "Leon, Spain",42.5987,-5.5671,/world/leon-spain
 "Salamanca, Spain",40.9701,-5.6635,/world/salamanca-spain
-"Madrid, Spain",40.4168,-3.7038,/world/madrid-spain
+"Madrid, Spain",40.05,-3.7038,/world/madrid-spain
 "Gijon, Spain",43.5322,-5.6611,
-"Astorga, Spain",42.4550,-6.0526,/world/astorga-spain
-"Las Medulas, Spain",42.4536,-6.7736,
+"Astorga, Spain",42.4550,-6.85,/world/astorga-spain
+"Las Medulas, Spain",42.4536,-7.95,
 "Nuremberg, Germany",49.4521,11.0767,
 "Ybbs an der Donau, Austria",48.1667,15.0833,/world/ybbs-an-der-donau-austria
 "Segovia, Spain",40.9429,-4.1088,/world/segovia-spain
