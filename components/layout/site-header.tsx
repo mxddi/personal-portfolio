@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { BIO_PAGE_ENABLED } from "@/lib/data/site";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -14,7 +15,7 @@ const NAV_LINKS = [
   { href: "/research", label: "Research" },
   { href: "/flight-log", label: "Flight Log" },
   { href: "/real-estate", label: "Real Estate" },
-  { href: "/recognition", label: "Bio" },
+  ...(BIO_PAGE_ENABLED ? [{ href: "/recognition", label: "Bio" as const }] : []),
 ];
 
 export function SiteHeader() {

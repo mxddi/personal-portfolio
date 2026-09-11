@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { BioSection } from "@/components/recognition/bio-section";
 import { RecognitionSection } from "@/components/recognition/recognition-section";
+import { BIO_PAGE_ENABLED } from "@/lib/data/site";
 
 export const metadata: Metadata = {
   title: "Bio — Madaly G",
@@ -9,6 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function BioPage() {
+  if (!BIO_PAGE_ENABLED) {
+    notFound();
+  }
+
   return (
     <div className="container-page py-16 sm:py-20">
       <BioSection />
