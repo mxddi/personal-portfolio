@@ -20,7 +20,7 @@ export default function RecognitionPage() {
   return (
     <div className="container-page py-16 sm:py-20">
       <PageIntro
-        eyebrow="Honors & Awards"
+        //eyebrow="Honors & Awards"
         title="Recognition"
         description="Selected grants, scholarships, academic honors, competitive event placements, and service awards."
       />
