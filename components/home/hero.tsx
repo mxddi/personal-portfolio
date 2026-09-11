@@ -60,7 +60,7 @@ export function Hero() {
               <span className="text-zinc-950 dark:text-zinc-50">
               into an M.S. in Electrical Engineering program,  
               </span>
-              {" "} where I plan to focus on autonomous spacecraft systems.
+              {" "} where I will focus on autonomous spacecraft systems.
             </p>
 
             <div
