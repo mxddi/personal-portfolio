@@ -116,11 +116,15 @@ export function ResearchCard({ paper }: { paper: ResearchPaper }) {
       : []),
     ...(paper.additionalFiles ?? []),
   ];
+  const hasPreviews = fileLinks.length > 0 || Boolean(paper.image);
 
   return (
     <div
       id={paper.slug}
-      className="group scroll-mt-24 grid grid-cols-1 gap-6 border border-zinc-200 bg-white p-5 transition-all duration-300 ease-precise hover:border-accent/40 hover:bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900/60 sm:grid-cols-[160px_1fr] sm:p-6"
+      className={cn(
+        "group scroll-mt-24 grid grid-cols-1 gap-6 border border-zinc-200 bg-white p-5 transition-all duration-300 ease-precise hover:border-accent/40 hover:bg-zinc-50/60 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900/60 sm:p-6",
+        hasPreviews && "sm:grid-cols-[160px_1fr]"
+      )}
     >
       {fileLinks.length > 0 ? (
         <div className="flex flex-col gap-3">
