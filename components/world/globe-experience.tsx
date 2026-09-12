@@ -17,6 +17,8 @@ import {
 import type { GlobeMethods } from "react-globe.gl";
 import {
   getNotebooksForLocation,
+  isPdfNotebook,
+  type PdfTravelNotebook,
   type TravelNotebook,
 } from "@/lib/data/travel-notebooks";
 
@@ -73,7 +75,7 @@ export function GlobeExperience() {
   const [loadError, setLoadError] = useState(false);
   const [selected, setSelected] = useState<LocationPoint | null>(null);
   const [globeReady, setGlobeReady] = useState(false);
-  const [openNotebooks, setOpenNotebooks] = useState<TravelNotebook[] | null>(
+  const [openNotebooks, setOpenNotebooks] = useState<PdfTravelNotebook[] | null>(
     null
   );
 
@@ -325,23 +327,49 @@ export function GlobeExperience() {
                 )}
               </div>
 
-              {selected.notebooks.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setOpenNotebooks(selected.notebooks)}
-                  aria-label={`Open notebook for ${selected.name}`}
-                  title="Open notebook"
-                  className="group relative shrink-0 overflow-hidden rounded-md transition-transform duration-200"
-                >
+              {selected.notebooks.length > 0 && (() => {
+                const pdfNotebooks = selected.notebooks.filter(isPdfNotebook);
+                const researchHref = selected.notebooks.find((n) => n.href)?.href;
+                const notebookIcon = (
                   <Image
                     src="/notebook-icon.jpg"
-                    alt="Open notebook"
+                    alt=""
                     width={112}
                     height={112}
                     className="h-[112px] w-[112px] object-cover transition-transform duration-300 ease-precise group-hover:scale-105"
                   />
-                </button>
-              )}
+                );
+
+                if (pdfNotebooks.length > 0) {
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => setOpenNotebooks(pdfNotebooks)}
+                      aria-label={`Open notebook for ${selected.name}`}
+                      title="Open notebook"
+                      className="group relative shrink-0 overflow-hidden rounded-md transition-transform duration-200"
+                    >
+                      {notebookIcon}
+                    </button>
+                  );
+                }
+
+                if (researchHref) {
+                  return (
+                    <Link
+                      href={researchHref}
+                      onClick={() => setSelected(null)}
+                      aria-label={`View research for ${selected.name}`}
+                      title="View research"
+                      className="group relative shrink-0 overflow-hidden rounded-md transition-transform duration-200"
+                    >
+                      {notebookIcon}
+                    </Link>
+                  );
+                }
+
+                return null;
+              })()}
             </div>
           </div>
         </div>

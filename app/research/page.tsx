@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { researchPapers } from "@/lib/data/research";
 import { ResearchCard } from "@/components/research/research-card";
+import { ResearchHashScroll } from "@/components/research/research-hash-scroll";
 import { PageIntro } from "@/components/ui/page-intro";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 export default function ResearchPage() {
   return (
     <div className="container-page py-16 sm:py-20">
+      <ResearchHashScroll />
       <PageIntro
         eyebrow="Published & Ongoing"
         title="Research"

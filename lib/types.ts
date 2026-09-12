@@ -70,6 +70,13 @@ export interface ResearchPaper {
   venue?: string;
   tags: string[];
   fileUrl?: string;
+  fileLabel?: string;
+  additionalFiles?: {
+    label: string;
+    url: string;
+    image?: string;
+    imageContain?: boolean;
+  }[];
   image?: string;
   imageContain?: boolean;
   pattern: "circuit" | "orbit" | "terminal";

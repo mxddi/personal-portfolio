@@ -14,6 +14,14 @@ export const researchPapers: ResearchPaper[] = [
     tags: ["Astrophysics", "Machine Learning"],
     pattern: "orbit",
     fileUrl: "/research/lisa-symposium-poster-abstract.pdf",
+    fileLabel: "Poster Abstract",
+    additionalFiles: [
+      {
+        label: "Symposium Paper",
+        url: "/research/nasa-lisa-symposium-paper-june-2026.pdf",
+        image: "/research/nasa-lisa-symposium-paper-june-2026.jpg",
+      },
+    ],
     image: "/research/lisa-symposium-poster-abstract.jpg",
   },
   {

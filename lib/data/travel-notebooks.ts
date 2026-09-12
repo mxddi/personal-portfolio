@@ -1,9 +1,19 @@
 export interface TravelNotebook {
   /** Must match the `Location Name` column in `public/visited_locations.csv` exactly. */
   location: string;
-  /** Public path to the PDF, rendered page-by-page in the globe's NotebookViewer. */
-  pdfUrl: string;
   title: string;
+  /** Public path to the PDF, rendered page-by-page in the globe's NotebookViewer. */
+  pdfUrl?: string;
+  /** When set (and no pdfUrl), the globe notebook icon links here instead of opening a PDF. */
+  href?: string;
+}
+
+export type PdfTravelNotebook = TravelNotebook & { pdfUrl: string };
+
+export function isPdfNotebook(
+  notebook: TravelNotebook
+): notebook is PdfTravelNotebook {
+  return Boolean(notebook.pdfUrl);
 }
 
 export const travelNotebooks: TravelNotebook[] = [
@@ -32,6 +42,18 @@ export const travelNotebooks: TravelNotebook[] = [
     location: "Tokyo, Japan",
     pdfUrl: "/notebooks/tokyo-japan.pdf",
     title: "Observations — Tokyo",
+  },
+  {
+    location: "Denver, Colorado",
+    href: "/research#extreme-quasar-outflows-lisa",
+    title:
+      "Developing New Computational Tools to Identify the Most Extreme Outflows in the Universe",
+  },
+  {
+    location: "Washington D.C.",
+    href: "/research#extreme-quasar-outflows-lisa",
+    title:
+      "Developing New Computational Tools to Identify the Most Extreme Outflows in the Universe",
   },
 ];
 

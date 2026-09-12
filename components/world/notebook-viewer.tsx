@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import type { TravelNotebook } from "@/lib/data/travel-notebooks";
+import type { PdfTravelNotebook } from "@/lib/data/travel-notebooks";
 
 // react-pdf needs the pdf.js worker; load it from the same CDN the rest of
 // the /world page already relies on (react-globe.gl's textures) rather than
@@ -14,7 +14,7 @@ const SWIPE_THRESHOLD = 50;
 
 interface NotebookViewerProps {
   /** One or more PDFs for the same location — visitors can cycle between them. */
-  notebooks: TravelNotebook[];
+  notebooks: PdfTravelNotebook[];
   onClose: () => void;
 }
 
