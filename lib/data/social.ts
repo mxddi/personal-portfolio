@@ -8,7 +8,7 @@ export interface SocialLink {
 export const SOCIAL_LINKS: SocialLink[] = [
   {
     label: "GitHub",
-    href: "https://github.com/mxddi",
+    href: "https://github.com/madalyg",
     icon: "github",
     handle: "@madalyg",
   },

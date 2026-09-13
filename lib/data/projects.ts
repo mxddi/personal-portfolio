@@ -71,7 +71,7 @@ export const projects: Project[] = [
     tags: ["AI", "Full-Stack", "Mobile", "Data"],
     date: "2023-05-14",
     links: {
-      repo: "https://github.com/mxddi/TimeSlice",
+      repo: "https://github.com/madalyg/TimeSlice",
       writeup: "https://devpost.com/software/timeslice",
     },
   },
@@ -91,7 +91,7 @@ export const projects: Project[] = [
     tags: ["AI", "Full-Stack", "Mobile", "Data"],
     date: "2026-04-25",
     links: {
-      repo: "https://github.com/mxddi/Synapse3",
+      repo: "https://github.com/madalyg/Synapse3",
       demo: "https://synapse3-topaz.vercel.app",
     },
   },
@@ -106,7 +106,7 @@ export const projects: Project[] = [
     date: "2026-09-01",
     ongoing: true,
     links: {
-      repo: "https://github.com/mxddi/rocket_operation_sim",
+      repo: "https://github.com/madalyg/rocket_operation_sim",
     },
   },
 
