@@ -11,7 +11,7 @@ export const pillars: Pillar[] = [
     index: "01",
     title: "Software Engineering",
     description:
-      "Three years building consumer and internal software at T-Mobile: the full lifecycle, from architecture and algorithm design to CI/CD and deployment.",
+      "Over two years building consumer-facing and internal software at T-Mobile: the full lifecycle, from architecture and algorithm design to CI/CD deployment.",
     skills: [
       "Python / Java / TypeScript / C++",
       "AWS · PostgreSQL · Node.js · Flask",
