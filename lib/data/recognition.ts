@@ -70,7 +70,7 @@ export const awards: Award[] = [
     category: "academic",
     association: "University of Washington Bothell",
     summary:
-      "Inducted into the national physics honor society for outstanding academic achievement in physics. Membership is restricted to top-ranking students who demonstrate high standards of scholarship, professional merit, and a dedication to the advancement of physics.",
+      "Inducted into the national physics honor society: membership is restricted to top-ranking students who demonstrate high standards of scholarship, professional merit, and a dedication to the advancement of physics.",
   },
   {
     slug: "deans-list",

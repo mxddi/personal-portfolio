@@ -188,7 +188,7 @@ export const projects: Project[] = [
   },
   {
     slug: "measuring-plancks-constant-leds",
-    title: "Measuring Planck's Constant Using LEDs",
+    title: "Measuring the Fundamental Planck's Constant Using LEDs",
     categories: ["computational-physics"],
     summary:
       "Derived Planck's constant from scratch by measuring the threshold voltage of four LED colors and relating the slope of voltage-vs-frequency to h — landing within 3.7% of the accepted value using a low-cost breadboard circuit.",
@@ -233,7 +233,7 @@ export const projects: Project[] = [
     title: "LiFi: Transmitting Data via Light Waves",
     categories: ["electrical-engineering"],
     summary:
-      "Built a laser-and-phototransistor link that pulses binary-encoded text between two Arduinos over light, then calculated transmission accuracy against distance from 50cm to 300cm.",
+      "Built a laser and phototransistor link that pulses binary-encoded text between two Arduinos over light, then calculated transmission accuracy against distance from 50cm to 300cm.",
     stack: ["Arduino", "Laser Diode", "Phototransistor", "Serial Comms"],
     tags: ["Electrical Engineering", "Optical Communication"],
     date: "2023-11-01",

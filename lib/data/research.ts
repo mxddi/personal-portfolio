@@ -29,7 +29,7 @@ export const researchPapers: ResearchPaper[] = [
     title:
       "Assessing the Risk of Low Earth Orbit Overcrowding Due to the Accelerating Private Satellite Industry",
     summary:
-      "A computational modeling study of orbital debris accumulation risk as commercial satellite constellations scale, examining how current collision-avoidance and de-orbit policy holds up against projected launch cadences.",
+      "A computational modeling study of orbital debris accumulation risk as commercial satellite constellations scale, examining how current collision-avoidance and de-orbit policy holds up against projected launch patterns.",
     date: "2025-09-01",
     venue: "CROW Journal, 2026 Online Journal",
     tags: ["Astrophysics", "Computational Modeling", "Aerospace"],
@@ -43,11 +43,13 @@ export const researchPapers: ResearchPaper[] = [
     title:
       "Quantum Computing as a Means of Drastically Improving Efficiency of Deep Space Missions",
     summary:
-      "A research report examining where classical computation supports deep-space exploration — planetary classification, orbital calculation, and signal degradation over interplanetary distances — and evaluating quantum optimization algorithms, QKD, and entanglement-based teleportation as candidate replacements.",
+      "A research report examining where classical computation supports deep-space exploration — planetary classification, orbital calculation, and signal degradation over interplanetary distances — and evaluating quantum optimization algorithms, QKD, and entanglement-based teleportation as replacements for classical algorithms.",
     date: "2023-06-01",
     venue: "Edmonds College — Research Report",
     tags: ["Quantum Computing", "Aerospace"],
     pattern: "terminal",
+    fileUrl: "/research/quantum-computing-deep-space-missions.pdf",
+    image: "/research/quantum-computing-deep-space-missions.jpg",
   },
 ];
 
