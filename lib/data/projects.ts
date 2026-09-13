@@ -195,6 +195,13 @@ export const projects: Project[] = [
     stack: ["Breadboard Circuit", "Multimeter", "Linear Regression"],
     tags: ["Quantum Mechanics", "Experimental Physics"],
     date: "2024-03-14",
+    image: "/projects/measuring-plancks-constant-leds-preview.png",
+    cardImage: "/projects/measuring-plancks-constant-leds-preview.png",
+    imageWidth: 1024,
+    imageHeight: 650,
+    links: {
+      writeup: "/projects/measuring-plancks-constant-leds.pdf",
+    },
   },
 
   // ---------- Electrical Engineering ----------
