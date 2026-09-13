@@ -68,11 +68,5 @@ call sites (`CategoryTile`, `ResearchCard`) only need `pattern` replaced with
 an `imageUrl`/`<Image>`.
 
 ## Notes
-
-- No light theme / toggle — the design is intentionally a single, strict
-  dark theme (`#0a0a0a`).
-- The accent color is a teal/cyan (`--color-accent` in `globals.css`, near
-  `#5eead4`) used sparingly for signal — status dots, active nav underline,
-  hover states, tags.
 - Dynamic route `params` are async per Next.js 15+/16 conventions
   (`await params` in `generateMetadata` and the page component).
